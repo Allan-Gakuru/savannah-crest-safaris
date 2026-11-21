@@ -12,7 +12,7 @@ Use **Explore safaris** for browsing and **Plan your safari** for the main lead 
 
 ## Build one form with two steps
 
-1. Choose one form plugin with stored entries, multipage support, notifications, and query prepopulation. The default candidate is **Forminator**. Confirm the installed version's behavior on staging and export the sanitized form configuration. Use a native Page at `/plan-your-safari/`. Embed the form with a supported block or shortcode. [Forminator documentation](https://wpmudev.com/docs/changelog/forminator/).
+1. Choose one form plugin with stored entries, multipage support, notifications, and query prepopulation. The default candidate is **Forminator**. Confirm the installed version's behavior in hosted WP Admin after deployment and version the sanitized configuration. Use a native Page at `/plan-your-safari/`. Embed the form with a supported block or shortcode. [Forminator documentation](https://wpmudev.com/docs/changelog/forminator/).
 2. **Step 1 – Your safari.** Show the known trip or origin context. Ask for a travel window with a flexible/unsure option and party size. Adults must be at least one; children can be zero. Let guests select a place or “Help me choose.” Keep budget range, interests and length preferences optional and distinguish per-person from group budgets if displayed.
 3. **Step 2 – Contact details.** Require name and email. Keep phone/WhatsApp and additional notes optional unless a verified business process needs them. Add a brief privacy notice with a link. Any permission to receive promotional email is a separate optional control.
 4. Put trip context in the enquiry URL as a public slug, e.g. `/plan-your-safari/?trip=example-safari`. Allow one context source from itinerary, destination, experience or general visit. Resolve it server-side against published objects. Render the readable label and store authoritative ID and title at submission. Treat request and hidden form values as untrusted. A retired or unknown context falls back to the generic form with no trip asserted. Never put guest information in a query string.
@@ -36,6 +36,6 @@ Respect the site's configured consent behavior. Keep names, email addresses, pho
 
 ## Enquiry acceptance checks
 
-- Complete a general enquiry, a trip-specific enquiry, and a small-screen enquiry from a destination. Verify the saved lead has the correct context and the planner receives the test notification.
-- Use flexible dates, invalid email, a browser refresh, Back between steps, and a simulated mail-delivery failure. Verify the success message corresponds to a stored entry. Simulate repeated submission and analytics reload.
+- After cPanel deployment, check the general, trip-specific, and small-screen destination flows in the hosted browser. For submissions, the owner uses clearly marked test data and the approved notification route. Verify the saved entry, trip context, planner notification, and visitor acknowledgement.
+- Use standalone regression tests for validation, storage and notification failure handling, duplicate submissions, and event deduplication where applicable. Stub external delivery. On the hosted site, check flexible dates, invalid email, refresh, Back between steps, and the success state without interrupting live delivery.
 - Test form cache with two different trip contexts. Verify editing the incoming trip slug cannot set a private or unpublished trip. Ensure error, success and focus states work with a keyboard and screen reader.

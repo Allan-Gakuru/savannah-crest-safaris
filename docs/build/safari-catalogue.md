@@ -32,6 +32,8 @@ Add a budget filter or price sort after enough itineraries have current comparab
 
 ## 4. Acceptance tests
 
+Use standalone tests with synthetic data for filter validation, numeric boundaries, query rules, and visibility cases. After cPanel deployment, the owner checks public behavior on the hosted site with approved published trips. Record any browser checks that need more live inventory, such as pagination or cross-border results.
+
 - A Kenyan country filter returns trips assigned to Maasai Mara and Amboseli when those records exist. A park filter excludes the other park. A cross-border trip appears under both assigned countries.
 - Verify numeric boundaries at 4, 5, 7 and 8 days and deterministic order across page 1 and page 2. Draft, private and trashed trips never appear. Removing a constraint broadens or preserves the result set.
 - Verify direct URLs, refresh, Back, clear, malformed or duplicate controls, and zero results. Test with JavaScript disabled. Verify cards expose the same current price and name on catalogue, homepage and safari detail.
