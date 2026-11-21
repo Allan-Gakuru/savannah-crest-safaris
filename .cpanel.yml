@@ -1,4 +1,4 @@
 ---
 deployment:
   tasks:
-    - '/bin/bash ./tools/deploy-cpanel.sh "$HOME/.savannah-crest-deploy-root"'
+    - '/bin/bash ./tools/deploy-cpanel.sh "$HOME/public_html"'

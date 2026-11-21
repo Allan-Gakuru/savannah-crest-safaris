@@ -46,11 +46,11 @@ Use this matrix for the affected routes and behaviors. Run the relevant checks o
 
 ## Deploy and maintain
 
-Follow the [cPanel connection and deployment guide](cpanel-deployment.md) to set up
-the GitHub clone, the WordPress path, and manual deployment from main.
+Follow the [cPanel connection and deployment guide](cpanel-deployment.md) to connect
+the GitHub clone and deploy main to the WordPress site in public_html.
 
 1. Before deploying, confirm the versioned sources and applicable repository checks, the pushed SHA, and the cPanel checkout, branch and deploy paths. For a public launch, confirm approved content, contact details, media and operator-owned booking and privacy text. Keep synthetic fixtures unpublished and configuration exports sanitized.
-2. The owner records the currently deployed SHA and dependencies and takes a verified database and uploads backup before configuration or schema changes. The owner pulls the intended revision with **Update from Remote** and clicks **Deploy HEAD Commit** in cPanel. The deployment manifest writes the two project directories into the configured WordPress installation. Keep WordPress core, uploads, credentials and live data outside the deployable paths. Sync versioned SCF groups and apply hosted configuration changes when required.
+2. The owner records the currently deployed SHA and dependencies and takes a verified database and uploads backup before configuration or schema changes. The owner pulls the intended revision with **Update from Remote** and clicks **Deploy HEAD Commit** in cPanel. The deployment manifest writes the two project directories into the WordPress installation in public_html. Keep WordPress core, uploads, credentials and live data outside the deployable paths. Sync versioned SCF groups and apply hosted configuration changes when required.
 3. The owner verifies the affected pages and admin flows on the hosted site. Check the active theme, Site Editor overrides, rewrite routes, asset freshness and cache behavior as applicable. Use the matrix for broader releases. Record the deployed SHA and which checks passed or are still pending.
 4. If a release breaks the site, the owner can redeploy the last known-good project files through cPanel or deploy a tested revert from `main`. Restore database or uploads only when the failing change requires it. Reconcile enquiries created since the backup before replacing database state.
 5. After launch, check Search Console coverage, sitemap status, 404s, performance, and lead delivery. Use the same repository and hosted checks for later releases. For changes to WordPress or installed plugins via WP Admin, record dependency versions and confirm the affected website and admin flows after updating.

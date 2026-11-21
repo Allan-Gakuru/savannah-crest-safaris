@@ -7,23 +7,18 @@ fail() {
 }
 
 if [[ $# -lt 1 || $# -gt 2 || ( $# -eq 2 && "$2" != --check ) ]]; then
-    fail "Usage: bash tools/deploy-cpanel.sh /path/to/deploy-root-file [--check]"
+    fail "Usage: bash tools/deploy-cpanel.sh /absolute/wordpress-directory [--check]"
 fi
 
-config=$1
-[[ -f "$config" && -r "$config" ]] || fail "Create $config with the absolute path to the hosted WordPress directory."
-mapfile -t lines < "$config"
-[[ ${#lines[@]} -eq 1 ]] || fail "Enter one absolute WordPress path in $config."
-configured_root=${lines[0]%$'\r'}
-[[ "$configured_root" == /* ]] || fail "Use an absolute WordPress path in $config."
-wordpress_root=$(cd -- "$configured_root" && pwd -P) || fail "Cannot open the configured WordPress directory."
+[[ "$1" == /* ]] || fail "Use an absolute path to the hosted WordPress directory."
+wordpress_root=$(cd -- "$1" && pwd -P) || fail "Cannot open the WordPress directory: $1."
 repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 
 if [[ "$repo_root/" == "$wordpress_root/"* || "$wordpress_root/" == "$repo_root/"* ]]; then
     fail "Use separate directories for the repository and the hosted WordPress installation."
 fi
 if [[ ! -f "$wordpress_root/wp-load.php" || ! -f "$wordpress_root/wp-includes/version.php" ]]; then
-    fail "The configured path does not contain a standard WordPress installation."
+    fail "The specified path does not contain a standard WordPress installation."
 fi
 
 for parent in wp-content wp-content/themes wp-content/plugins; do
