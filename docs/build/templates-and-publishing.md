@@ -2,10 +2,11 @@
 
 ## 1. Build the templates in order
 
-Use the child theme's HTML block templates to compose pages, and native patterns for editable narrative sections. Register structured-data-facing blocks in `scs-core` with `block.json` and PHP render functions. Use `postId` context on singles and the queried object for term templates. Use the main query in the archive block. Do not issue a second Query Loop for the same archive results. Give editor previews illustrative placeholders without inventing production content, and keep internal block options small. [Dynamic blocks](https://developer.wordpress.org/block-editor/getting-started/fundamentals/static-dynamic-rendering/) · [WordPress template hierarchy](https://developer.wordpress.org/themes/templates/template-hierarchy/).
+Use HTML block templates in the standalone `savannah-crest` theme to compose pages, and native patterns for editable narrative sections. After creating the shared header, footer, and fallback, build one complete destination → itinerary → enquiry path before expanding the other routes. Register structured-data-facing blocks in `scs-core` with `block.json` and PHP render functions. Use `postId` context on singles and the queried object for term templates. Use the main query in the archive block. Do not issue a second Query Loop for the same archive results. Give editor previews illustrative placeholders without inventing production content, and keep internal block options small. [Dynamic blocks](https://developer.wordpress.org/block-editor/getting-started/fundamentals/static-dynamic-rendering/) · [WordPress template hierarchy](https://developer.wordpress.org/themes/templates/template-hierarchy/).
 
 | Template | Route | Section order |
 | --- | --- | --- |
+| `index.html` | Fallback when a specific template is unavailable | Shared header → current query results → shared footer |
 | `front-page.html` | `/` | Hero + Explore/Plan actions → two-field finder → featured trips → destinations → experiences → how planning works → advisor or approved proof → planning CTA |
 | `archive-scs_safari.html` | `/safaris/` | Breadcrumbs and intro → filters → results and pagination → planner CTA/help |
 | `single-scs_safari.html` | `/safaris/{trip}/` | Breadcrumbs → trip hero → key facts and price → overview → route and days → stays → inclusions/exclusions → timing → related trips and enquiry |

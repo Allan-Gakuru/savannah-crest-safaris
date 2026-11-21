@@ -18,7 +18,8 @@ For a new build, follow this dependency order: theme and core plugin → content
 
 ## Build rules
 
-- Use WordPress and Secure Custom Fields. Put content types, taxonomies, schema, and shared business logic in `scs-core`. Put styles, template composition, and brand presentation in the `savannah-crest` child theme of Twenty Twenty-Five.
+- Build `savannah-crest` as a standalone WordPress block theme. Keep its styles, templates, parts, patterns, and brand presentation in Git. Use native WordPress blocks and the Site Editor.
+- Put content types, taxonomies, Secure Custom Fields definitions, and shared catalogue logic in `scs-core` so these features remain available when the active theme changes.
 - Keep one canonical source for each URL, field, taxonomy relationship, price, and form conversion event. Commit schema and template changes with their versioned sources.
 - Use the approved logo files under `assets/brand/` and the palette in [Brand.md](Brand.md). Follow the visitor journeys in [UX and enquiries](docs/build/ux-and-enquiries.md) and use original Savannah Crest layouts, copy, and cleared media.
 - Build the catalogue from Savannah Crest's own tour briefs and approved supplier material. Do not fetch, scrape, import, or transcribe third-party tours into the CMS. Use synthetic test records on local and staging until the owner supplies real inventory.
