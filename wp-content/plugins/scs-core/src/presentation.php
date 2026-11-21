@@ -155,7 +155,11 @@ function term_items( array $terms, string $catalogue_filter = '' ): void {
 		$photo = image( term_field( 'scs_term_hero', $term ), 'medium_large', $attributes );
 		if ( ! $photo && $catalogue ) {
 			$trips = matching_safaris( array( term_clause( $term ) ), array(), 1 );
-			$photo = $trips ? image( get_post_thumbnail_id( $trips[0] ), 'medium_large', $attributes ) : '';
+			if ( $trips ) {
+				$thumbnail = (int) get_post_thumbnail_id( $trips[0] );
+				$gallery = array_values( array_diff( ids( field( 'scs_gallery', $trips[0]->ID ) ), array( $thumbnail ) ) );
+				$photo = image( $gallery[0] ?? 0, 'medium_large', $attributes ) ?: image( $thumbnail, 'medium_large', $attributes );
+			}
 		}
 		echo '<li><a href="' . esc_url( $url ) . '">';
 		echo $photo; // WordPress attachment markup.

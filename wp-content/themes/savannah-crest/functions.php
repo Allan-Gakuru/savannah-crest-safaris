@@ -6,7 +6,7 @@ namespace SavannahCrest\Theme;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION = '0.2.0';
+const VERSION = '0.2.1';
 
 add_action( 'after_setup_theme', static function (): void {
 	add_theme_support( 'wp-block-styles' );

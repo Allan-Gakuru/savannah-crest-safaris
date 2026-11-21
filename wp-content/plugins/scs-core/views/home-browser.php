@@ -7,7 +7,9 @@ $front = (int) get_option( 'page_on_front' );
 $safaris = matching_safaris( array(), $front ? ids( field( 'scs_home_featured_trips', $front ) ) : array(), 3 );
 $place_picks = $front ? ids( field( 'scs_home_featured_places', $front ) ) : array();
 $places = array_column( ready_terms( DESTINATION, array(), $place_picks, 3 ), null, 'term_id' );
-$places += array_column( inventory_terms()['where'], null, 'term_id' );
+$inventory_places = array_column( inventory_terms()['where'], null, 'term_id' );
+// Use the most specific places as unpublished-hub fallbacks, leaving editorial picks intact.
+$places += array_diff_key( $inventory_places, array_fill_keys( wp_list_pluck( $inventory_places, 'parent' ), true ) );
 $places = array_slice( $places, 0, 3 );
 $experiences = ready_terms( EXPERIENCE, array(), array(), 4 );
 ?>
