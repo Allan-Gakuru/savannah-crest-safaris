@@ -33,8 +33,8 @@ with stubs. The hosted installation is used for WordPress Admin and website test
    if the installed version reports a versioned definition ready to sync.
 3. In **Appearance → Themes**, preview and activate **Savannah Crest**. In
    **Settings → Reading**, assign the static Home and a separate Guides posts page.
-   Set a cleared featured image on Home. Review any saved template overrides and the
-   navigation in the Site Editor.
+   Set a cleared featured image on Home to replace the bundled illustrative hero.
+   Review any saved template overrides and the navigation in the Site Editor.
 4. Configure pretty permalinks and the guides path described in the
    [content model](docs/build/content-model.md). Keep the native Safari archive at
    **/safaris/**. Create the Destinations and Experiences Pages with the matching slugs
@@ -50,7 +50,12 @@ Use [the enquiry setup](docs/build/ux-and-enquiries.md) to create the two-step
 Forminator form and map its three context fields in **Settings → Safari Planner**.
 Configure the approved inbox, submission storage, spam protection, and visitor
 acknowledgement before opening the planner to visitors. Exclude the planner from
-server and CDN full-page caching.
+server and CDN full-page caching, along with `/enquire/`.
+
+After deploying, open WP Admin once as an administrator. The core plugin creates
+the **Enquire** page if its slug is available. The header links there and the
+homepage actions link separately to the catalogue and trip planner. Both enquiry
+pages use the form configured under **Settings → Safari Planner**.
 
 Check the homepage, catalogue filters and clean reset, destination page, itinerary
 accordion, and planner on the hosted site. From an approved itinerary, send a

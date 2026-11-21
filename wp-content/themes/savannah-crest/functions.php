@@ -6,7 +6,7 @@ namespace SavannahCrest\Theme;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 add_action( 'after_setup_theme', static function (): void {
 	add_theme_support( 'wp-block-styles' );
@@ -47,10 +47,11 @@ function site_mark( bool $reverse = false ): void {
 }
 
 function links(): array {
+	$catalogue = (string) get_post_type_archive_link( 'scs_safari' );
 	return array_filter( array(
-		__( 'Safaris', 'savannah-crest' )      => (string) get_post_type_archive_link( 'scs_safari' ),
-		__( 'Destinations', 'savannah-crest' ) => page_link( 'destinations' ),
-		__( 'Experiences', 'savannah-crest' )  => page_link( 'experiences' ),
+		__( 'Safaris', 'savannah-crest' )      => $catalogue,
+		__( 'Destinations', 'savannah-crest' ) => page_link( 'destinations' ) ?: ( $catalogue ? $catalogue . '#safari-filter-where' : '' ),
+		__( 'Experiences', 'savannah-crest' )  => page_link( 'experiences' ) ?: ( $catalogue ? $catalogue . '#safari-filter-experience' : '' ),
 		__( 'Travel Guide', 'savannah-crest' ) => page_link( 'guides' ),
 		__( 'About', 'savannah-crest' )        => page_link( 'about' ),
 	) );

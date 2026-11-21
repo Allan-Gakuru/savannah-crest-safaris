@@ -14,7 +14,7 @@ Use the `scs_safari` post-type archive at `/safaris/`. In `scs-core`, attach a n
 
 Combine active filter dimensions with AND. Start with one choice per facet. Use `publish` only, a page size of 12, and the native `paged` value. For single-choice destination filters, assign stable unique term slugs across the hierarchy. Use an explicit allowlist, reject arrays or invalid term values with a clear reset path, and safely escape selected labels and query strings. Define the shortest sort as numeric duration ascending and then ID. Keep old/default values out of generated URLs. Keep filters in the new GET URL and drop page number when filters change.
 
-Use `/safaris/page/2/` plus active query parameters for pagination. Pagination anchors are real links. Filter state survives reload, URL sharing, and browser Back. Use one query rule for both the homepage finder and listing form. The finder can pass just `where` and `experience`. Example input is `/safaris/?where=maasai-mara&duration=5-7`. Attribution parameters can be retained for enquiries without changing the archive's canonical URL. See [SEO and release](seo-and-release.md) for the indexing policy.
+Use `/safaris/page/2/` plus active query parameters for pagination. Pagination anchors are real links. Filter state survives reload, URL sharing, and browser Back. Use one query rule for both the homepage finder and listing form. The finder passes `where` and `duration`. Example input is `/safaris/?where=maasai-mara&duration=5-7`. Attribution parameters can be retained for enquiries without changing the archive's canonical URL. See [SEO and release](seo-and-release.md) for the indexing policy.
 
 ## 2. Implement the catalogue layout
 

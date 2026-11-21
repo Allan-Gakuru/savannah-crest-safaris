@@ -4,6 +4,7 @@ namespace SavannahCrest\Core;
 defined( 'ABSPATH' ) || exit;
 
 const PLANNER_SLUG = 'plan-your-safari';
+const ENQUIRY_SLUG = 'enquire';
 const CONTEXT_TYPES = array( 'trip', 'destination', 'experience' );
 const FORM_OPTION   = 'scs_planner_form';
 
@@ -14,6 +15,28 @@ add_filter( 'forminator_custom_form_submit_field_data', __NAMESPACE__ . '\planne
 function planner_url( string $kind = '', string $slug = '' ): string {
 	$url = page_url( PLANNER_SLUG );
 	return $url && $slug && in_array( $kind, CONTEXT_TYPES, true ) ? add_query_arg( $kind, $slug, $url ) : $url;
+}
+
+function ensure_enquiry_page(): void {
+	if ( ! current_user_can( 'manage_options' ) || ! current_user_can( 'publish_pages' ) ) {
+		return;
+	}
+	$page_option = 'scs_enquiry_page_provisioned';
+	if ( ! add_option( $page_option, '1', '', false ) ) {
+		return;
+	}
+	if ( get_page_by_path( ENQUIRY_SLUG, OBJECT, array( 'page' ) ) ) {
+		return;
+	}
+	$page_id = wp_insert_post( array(
+		'post_type'   => 'page',
+		'post_name'   => ENQUIRY_SLUG,
+		'post_title'  => __( 'Enquire', 'scs-core' ),
+		'post_status' => 'publish',
+	), true );
+	if ( ! $page_id || is_wp_error( $page_id ) ) {
+		delete_option( $page_option );
+	}
 }
 
 function context_from_query( array $request ): array {
@@ -49,8 +72,8 @@ function active_context(): array {
 	return $context;
 }
 
-function exclude_contextual_planner_from_cache(): void {
-	if ( ! is_page( PLANNER_SLUG ) ) {
+function exclude_enquiry_forms_from_cache(): void {
+	if ( ! is_page( array( PLANNER_SLUG, ENQUIRY_SLUG ) ) ) {
 		return;
 	}
 	if ( ! defined( 'DONOTCACHEPAGE' ) ) {

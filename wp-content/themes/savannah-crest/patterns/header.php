@@ -21,9 +21,10 @@ defined( 'ABSPATH' ) || exit;
 		<!-- wp:navigation {"overlayMenu":"mobile","className":"scs-primary-nav","layout":{"type":"flex","justifyContent":"center"}} -->
 		<?php foreach ( links() as $label => $url ) { nav_link_block( $label, $url ); } ?>
 		<!-- /wp:navigation -->
-		<?php if ( page_link( 'plan-your-safari' ) ) : ?>
+		<?php $enquiry_url = page_link( 'enquire' ); ?>
+		<?php if ( $enquiry_url ) : ?>
 			<!-- wp:html -->
-			<a class="scs-button scs-header-action" href="<?php echo esc_url( page_link( 'plan-your-safari' ) ); ?>"><?php esc_html_e( 'Plan your safari', 'savannah-crest' ); ?></a>
+			<a class="scs-button scs-header-action" data-scs-enquiry="header" href="<?php echo esc_url( $enquiry_url ); ?>"><?php esc_html_e( 'Enquire', 'savannah-crest' ); ?></a>
 			<!-- /wp:html -->
 		<?php endif; ?>
 	</div>

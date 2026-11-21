@@ -32,7 +32,7 @@ $best_time = rows( $fields['scs_best_time'] );
 $includes = bullet_labels( $fields['scs_includes'] );
 $excludes = bullet_labels( $fields['scs_excludes'] );
 $highlights = bullet_labels( $fields['scs_highlights'] );
-$hero = image( get_post_thumbnail_id( $trip ), 'large', array( 'loading' => 'eager', 'fetchpriority' => 'high' ) );
+$hero = image( get_post_thumbnail_id( $trip ), 'full', array( 'loading' => 'eager', 'fetchpriority' => 'high', 'sizes' => '(max-width: 1280px) 92vw, 1216px' ) );
 $duration = duration_label( $fields['scs_duration_days'] );
 ?>
 <article class="scs-shell scs-trip"<?php if ( 'publish' === $trip->post_status ) : ?> data-scs-trip="<?php echo esc_attr( $trip->post_name ); ?>"<?php endif; ?>>
@@ -41,21 +41,27 @@ $duration = duration_label( $fields['scs_duration_days'] );
 		<a href="<?php echo esc_url( catalogue_url() ); ?>"><?php esc_html_e( 'Safaris', 'scs-core' ); ?></a>
 		<?php if ( $primary_url && ! is_wp_error( $primary_url ) ) : ?><a href="<?php echo esc_url( $primary_url ); ?>"><?php echo esc_html( $primary->name ); ?></a><?php endif; ?>
 	</nav>
-	<header class="scs-trip-hero<?php echo $hero ? ' scs-trip-hero--photo' : ''; ?>">
-		<div class="scs-trip-hero__copy">
-			<?php if ( $route ) : ?><p class="scs-eyeline"><?php echo esc_html( $route ); ?></p><?php endif; ?>
-			<h1><?php echo esc_html( get_the_title( $trip ) ); ?></h1>
-			<?php if ( $trip->post_excerpt ) : ?><p><?php echo esc_html( wp_strip_all_tags( $trip->post_excerpt ) ); ?></p><?php endif; ?>
-			<dl class="scs-facts">
-				<?php if ( $duration ) : ?><div><dt><?php esc_html_e( 'Duration', 'scs-core' ); ?></dt><dd><?php echo esc_html( $duration ); ?></dd></div><?php endif; ?>
-				<?php if ( $fields['scs_start_location'] ) : ?><div><dt><?php esc_html_e( 'Starts in', 'scs-core' ); ?></dt><dd><?php echo esc_html( $fields['scs_start_location'] ); ?></dd></div><?php endif; ?>
-				<?php if ( $fields['scs_end_location'] ) : ?><div><dt><?php esc_html_e( 'Ends in', 'scs-core' ); ?></dt><dd><?php echo esc_html( $fields['scs_end_location'] ); ?></dd></div><?php endif; ?>
-			</dl>
-			<p class="scs-price"><?php echo esc_html( $price ); ?></p>
-			<?php if ( $rate_note ) : ?><p class="scs-rate-note"><?php echo esc_html( $rate_note ); ?></p><?php endif; ?>
-			<?php echo action_link( $planner, __( 'Enquire about this safari', 'scs-core' ), 'scs-button', 'itinerary' ); ?>
+	<header class="scs-trip-hero scs-itinerary-hero">
+		<div class="scs-itinerary-hero__lead<?php echo $hero ? ' scs-itinerary-hero__lead--photo' : ''; ?>">
+			<?php if ( $hero ) : ?><figure class="scs-itinerary-hero__image"><?php echo $hero; // WordPress attachment markup. ?></figure><?php endif; ?>
+			<div class="scs-itinerary-hero__heading">
+				<?php if ( $route ) : ?><p class="scs-eyeline"><?php echo esc_html( $route ); ?></p><?php endif; ?>
+				<h1><?php echo esc_html( get_the_title( $trip ) ); ?></h1>
+			</div>
 		</div>
-		<?php if ( $hero ) : ?><figure class="scs-trip-hero__image"><?php echo $hero; // WordPress attachment markup. ?></figure><?php endif; ?>
+		<div class="scs-itinerary-hero__summary">
+			<?php if ( $trip->post_excerpt ) : ?><p><?php echo esc_html( wp_strip_all_tags( $trip->post_excerpt ) ); ?></p><?php endif; ?>
+			<div class="scs-itinerary-hero__details">
+				<dl class="scs-facts">
+					<?php if ( $duration ) : ?><div><dt><?php esc_html_e( 'Duration', 'scs-core' ); ?></dt><dd><?php echo esc_html( $duration ); ?></dd></div><?php endif; ?>
+					<?php if ( $fields['scs_start_location'] ) : ?><div><dt><?php esc_html_e( 'Starts in', 'scs-core' ); ?></dt><dd><?php echo esc_html( $fields['scs_start_location'] ); ?></dd></div><?php endif; ?>
+					<?php if ( $fields['scs_end_location'] ) : ?><div><dt><?php esc_html_e( 'Ends in', 'scs-core' ); ?></dt><dd><?php echo esc_html( $fields['scs_end_location'] ); ?></dd></div><?php endif; ?>
+				</dl>
+				<p class="scs-price"><?php echo esc_html( $price ); ?></p>
+				<?php if ( $rate_note ) : ?><p class="scs-rate-note"><?php echo esc_html( $rate_note ); ?></p><?php endif; ?>
+				<?php echo action_link( $planner, __( 'Enquire about this safari', 'scs-core' ), 'scs-button', 'itinerary' ); ?>
+			</div>
+		</div>
 	</header>
 	<?php if ( $days || $includes || $excludes ) : ?>
 		<nav class="scs-jump" aria-label="<?php esc_attr_e( 'On this page', 'scs-core' ); ?>">

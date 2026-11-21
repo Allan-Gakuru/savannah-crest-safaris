@@ -7,7 +7,7 @@ Use HTML block templates in the standalone `savannah-crest` theme to compose pag
 | Template | Route | Section order |
 | --- | --- | --- |
 | `index.html` | Fallback when a specific template is unavailable | Shared header → current query results → shared footer |
-| `front-page.html` | `/` | Hero + Explore/Plan actions → two-field finder → featured trips → destinations → experiences → how planning works → advisor or approved proof → planning CTA |
+| `front-page.html` | `/` | Photo hero with Plan and Explore actions → destination and duration finder → destination cards → featured safaris → experiences → planning CTA |
 | `archive-scs_safari.html` | `/safaris/` | Breadcrumbs and intro → filters → results and pagination → planner CTA/help |
 | `single-scs_safari.html` | `/safaris/{trip}/` | Breadcrumbs → trip hero → key facts and price → overview → route and days → stays → inclusions/exclusions → timing → related trips and enquiry |
 | `taxonomy-scs_destination.html` | `/destinations/{path}/` | Breadcrumbs → place hero and intro → matching trips → child places where relevant → when/where/how to visit → stays and guides → plan |
@@ -15,6 +15,7 @@ Use HTML block templates in the standalone `savannah-crest` theme to compose pag
 | `single-scs_stay.html` | `/stays/{stay}/` | Place and property → photo/camp overview → relevant facilities and transfer notes → trips using the stay → planner CTA |
 | `home.html`, `single.html` | `/guides/` and article pages | Guide archive links to posts. Articles use visible author and reviewed date, distinct narrative and contextual links. |
 | `page.html` and focused page template | Landing, company and planner Pages | Editable Get to know us, Destinations, Experiences and Terms pages. Planner template uses a quiet layout with brand, progress and a safe exit. |
+| `page-enquire.html` | `/enquire/` | Quiet branded header → enquiry introduction and step indicator → configured enquiry form |
 
 ## 2. Build the itinerary detail vertical slice
 

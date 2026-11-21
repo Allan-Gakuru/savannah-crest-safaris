@@ -11,6 +11,13 @@
     "postId",
     "postType"
   ],
+  "attributes": {
+    "mode": {
+      "type": "string",
+      "enum": ["planner", "enquiry"],
+      "default": "planner"
+    }
+  },
   "supports": {
     "html": false,
     "inserter": false

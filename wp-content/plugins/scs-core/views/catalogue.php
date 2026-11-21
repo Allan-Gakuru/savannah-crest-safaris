@@ -14,7 +14,7 @@ $active_options = filter_options();
 $url = catalogue_url();
 $tracking = attribution( wp_unslash( $_GET ) );
 ?>
-<section class="scs-shell scs-section" aria-label="<?php esc_attr_e( 'Safari catalogue', 'scs-core' ); ?>">
+<section class="scs-shell scs-section scs-catalogue" aria-label="<?php esc_attr_e( 'Safari catalogue', 'scs-core' ); ?>">
 	<?php filter_form( $values ); ?>
 	<?php if ( $state['invalid'] ) : ?>
 		<div class="scs-message">

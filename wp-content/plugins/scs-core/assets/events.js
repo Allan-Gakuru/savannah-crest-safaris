@@ -72,7 +72,7 @@
 				return;
 			}
 			finished.add(this);
-			emit('enquiry_submit_success', { ...context, surface: 'planner' });
+			emit('enquiry_submit_success', { ...context, surface: planner.dataset.scsSurface || 'planner' });
 		});
 	}
 })();

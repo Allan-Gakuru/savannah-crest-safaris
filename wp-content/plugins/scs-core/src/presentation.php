@@ -74,11 +74,11 @@ function bulleted_section( string $title, array $items ): void {
 	echo '</ul></div>';
 }
 
-function filter_select( string $key, string $label, array $options, string $value ): void {
+function filter_select( string $key, string $label, array $options, string $value, string $id ): void {
 	?>
 	<label class="scs-field">
 		<span><?php echo esc_html( $label ); ?></span>
-		<select name="<?php echo esc_attr( $key ); ?>">
+		<select id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $key ); ?>">
 			<?php foreach ( $options as $slug => $option ) : ?>
 				<option value="<?php echo esc_attr( $slug ); ?>" <?php selected( $value, $slug ); ?>><?php echo esc_html( $option ); ?></option>
 			<?php endforeach; ?>
@@ -114,7 +114,8 @@ function filter_form( array $values, bool $finder = false ): void {
 		return;
 	}
 	$options = filter_options();
-	$keys = $finder ? array( 'where', 'experience' ) : FILTERS;
+	$keys = $finder ? array( 'where', 'duration' ) : FILTERS;
+	$id_prefix = $finder ? 'safari-finder-' : 'safari-filter-';
 	$hidden = attribution( wp_unslash( $_GET ) );
 	$query = wp_parse_url( $action, PHP_URL_QUERY );
 	if ( $query ) {
@@ -125,26 +126,37 @@ function filter_form( array $values, bool $finder = false ): void {
 	<form method="get" action="<?php echo esc_url( $action ); ?>" class="scs-filter-form" aria-label="<?php echo esc_attr( $finder ? __( 'Find a safari', 'scs-core' ) : __( 'Filter safaris', 'scs-core' ) ); ?>">
 		<?php foreach ( $keys as $key ) : ?>
 			<?php if ( 'comfort' !== $key || count( $options['comfort'][1] ) > 1 ) : ?>
-				<?php filter_select( $key, $options[ $key ][0], $options[ $key ][1], $values[ $key ] ?? '' ); ?>
+				<?php filter_select( $key, $options[ $key ][0], $options[ $key ][1], $values[ $key ] ?? '', $id_prefix . $key ); ?>
 			<?php endif; ?>
 		<?php endforeach; ?>
 		<?php foreach ( $hidden as $key => $value ) : ?><input type="hidden" name="<?php echo esc_attr( $key ); ?>" value="<?php echo esc_attr( $value ); ?>"><?php endforeach; ?>
-		<button type="submit" class="scs-button"><?php esc_html_e( 'Show safaris', 'scs-core' ); ?></button>
+		<button type="submit" class="scs-button"><?php echo esc_html( $finder ? __( 'Find safaris', 'scs-core' ) : __( 'Show safaris', 'scs-core' ) ); ?></button>
 	</form>
 	<?php
 }
 
-function term_items( array $terms ): void {
+function term_items( array $terms, string $catalogue_filter = '' ): void {
 	if ( ! $terms ) {
 		return;
 	}
+	$catalogue = $catalogue_filter ? catalogue_url() : '';
+	$inventory = $catalogue ? ( inventory_terms()[ $catalogue_filter ] ?? array() ) : array();
 	echo '<ul class="scs-term-grid" role="list">';
 	foreach ( $terms as $term ) {
-		$url = get_term_link( $term );
-		if ( is_wp_error( $url ) || ! hub_ready( $term ) ) {
+		$hub = hub_ready( $term );
+		$url = $hub ? get_term_link( $term ) : '';
+		if ( ! $hub && isset( $inventory[ $term->slug ] ) ) {
+			$url = add_query_arg( $catalogue_filter, $term->slug, $catalogue );
+		}
+		if ( ! $url || is_wp_error( $url ) ) {
 			continue;
 		}
-		$photo = image( term_field( 'scs_term_hero', $term ), 'medium_large', array( 'loading' => 'lazy', 'alt' => '' ) );
+		$attributes = array( 'loading' => 'lazy', 'decoding' => 'async', 'alt' => '' );
+		$photo = image( term_field( 'scs_term_hero', $term ), 'medium_large', $attributes );
+		if ( ! $photo && $catalogue ) {
+			$trips = matching_safaris( array( term_clause( $term ) ), array(), 1 );
+			$photo = $trips ? image( get_post_thumbnail_id( $trips[0] ), 'medium_large', $attributes ) : '';
+		}
 		echo '<li><a href="' . esc_url( $url ) . '">';
 		echo $photo; // WordPress attachment markup.
 		echo '<span>' . esc_html( $term->name ) . ' <span aria-hidden="true">↗</span></span></a></li>';

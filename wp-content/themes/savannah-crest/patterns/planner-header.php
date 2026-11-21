@@ -13,7 +13,11 @@ defined( 'ABSPATH' ) || exit;
 	<!-- wp:html -->
 	<div class="scs-header-inner scs-shell scs-header-inner--quiet">
 		<?php site_mark(); ?>
-		<a class="scs-text-link" href="<?php echo esc_url( get_post_type_archive_link( 'scs_safari' ) ?: home_url( '/' ) ); ?>"><?php esc_html_e( 'Continue exploring', 'savannah-crest' ); ?></a>
+		<?php if ( is_page( 'enquire' ) ) : ?>
+			<a class="scs-text-link" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Back to home', 'savannah-crest' ); ?></a>
+		<?php else : ?>
+			<a class="scs-text-link" href="<?php echo esc_url( get_post_type_archive_link( 'scs_safari' ) ?: home_url( '/' ) ); ?>"><?php esc_html_e( 'Continue exploring', 'savannah-crest' ); ?></a>
+		<?php endif; ?>
 	</div>
 	<!-- /wp:html -->
 </div>

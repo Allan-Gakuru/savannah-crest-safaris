@@ -26,7 +26,8 @@ Use **Explore safaris** for browsing and **Plan your safari** for the main lead 
 1. In Forminator, publish a two-step form using the fields and rules above. Enable stored submissions, AJAX submission, the inline confirmation, and the approved spam protection. Use normal page rendering for this form so the verified trip context is present when it renders.
 2. Add three distinct Hidden fields for context type, context ID, and context title. Use blank custom defaults. Copy their field IDs and the published form ID to **Settings → Safari Planner**. The planner template embeds the configured form, so the editorial Page only needs its title and any introductory copy.
 3. In the planner notification, include the three context fields and the submission reference using Forminator's merge fields. Configure the approved recipient, authenticated From address, Reply-To and visitor acknowledgement. Use private WP Admin submissions to confirm the authoritative stored values.
-4. Exclude **/plan-your-safari/**, including contextual variants, in cPanel, caching plugins, and any CDN. The plugin also sends no-cache headers. Test the form from two different published itineraries after deployment.
+4. Exclude **/plan-your-safari/**, including contextual variants, and **/enquire/** in cPanel, caching plugins, and any CDN. The plugin also sends no-cache headers. Test the form from two different published itineraries after deployment.
+5. The header **Enquire** button opens `/enquire/`, which offers an introduction and then the same configured Forminator form with general enquiry context. The distinct **Plan your safari** hero button continues to open `/plan-your-safari/`. After deployment, open WP Admin as an administrator to provision the Enquire Page if it does not already exist.
 
 ## Conversion measurement and operations
 

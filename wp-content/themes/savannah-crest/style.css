@@ -1,7 +1,7 @@
 /*
 Theme Name: Savannah Crest
 Description: WordPress block theme for Savannah Crest Safaris.
-Version: 0.1.0
+Version: 0.2.0
 Requires at least: 6.4
 Requires PHP: 7.4
 Text Domain: savannah-crest
@@ -71,7 +71,7 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 .scs-button--reverse:focus-visible { outline-color: var(--scs-cream); }
 .scs-text-link { text-decoration: underline; text-decoration-thickness: 1px; font-weight: 600; }
 
-.scs-site-header { border-bottom: 1px solid var(--scs-line); }
+.scs-site-header { background: var(--scs-paper); border-bottom: 1px solid var(--scs-line); }
 .scs-header-inner { display: flex; align-items: center; justify-content: space-between; gap: clamp(.75rem, 2.1vw, 2rem); min-height: 76px; padding-block: .65rem; box-sizing: border-box; }
 .scs-header-inner > *, .scs-home-actions > * { margin-block: 0 !important; }
 .scs-site-mark { display: inline-flex; align-items: center; min-height: 44px; }
@@ -81,37 +81,57 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 .scs-primary-nav button { width: 44px; height: 44px; justify-content: center; align-items: center; color: var(--scs-espresso); }
 .scs-primary-nav .wp-block-navigation__responsive-container.is-menu-open { background: var(--scs-cream); color: var(--scs-espresso); }
 .scs-primary-nav .wp-block-navigation-item a { min-height: 44px; display: inline-flex; align-items: center; }
-.scs-header-action { white-space: nowrap; }
+.scs-header-action { min-width: 7rem; white-space: nowrap; }
 .scs-header-inner--quiet .scs-text-link { text-align: end; }
 
-.scs-home-hero {
+.scs-home-hero,
+.scs-itinerary-hero__lead--photo {
+	position: relative;
+	isolation: isolate;
 	display: grid;
-	align-items: stretch;
-	min-block-size: clamp(24rem, 50vw, 39rem);
-	margin-block: clamp(.8rem, 2.4vw, 2rem) !important;
-	background: var(--scs-sand);
-	position: relative;
+	align-content: end;
+	background: var(--scs-espresso);
+	color: var(--scs-paper);
 }
-.scs-home-hero:has(.scs-home-image img) { grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); }
+.scs-home-hero {
+	min-block-size: clamp(30rem, 45vw, 39rem);
+	margin-block: clamp(.65rem, 1.8vw, 1.6rem) 0 !important;
+}
+.scs-home-hero::before,
+.scs-itinerary-hero__lead--photo::before {
+	position: absolute;
+	z-index: -1;
+	inset: 0;
+	content: '';
+	background: linear-gradient(0deg, rgb(26 17 13 / 94%), rgb(26 17 13 / 57%) 36%, transparent 82%);
+}
 .scs-home-hero-copy {
-	align-self: center;
-	max-width: 52rem;
-	padding: clamp(2.3rem, 7vw, 6rem) clamp(1.45rem, 5vw, 4.75rem);
-	position: relative;
+	max-width: 44rem;
+	box-sizing: border-box;
+	padding: clamp(1.1rem, 4.7vw, 4.6rem);
+	margin-block: 0 !important;
 }
-.scs-home-hero-copy::before { display: block; content: ""; width: 3.5rem; height: 2px; background: var(--scs-gold); margin-block-end: 1.2rem; }
-.scs-home-hero-copy p { max-width: 34ch; font-size: clamp(1rem, 1.9vw, 1.16rem); }
-.scs-home-image { margin: 0 !important; min-width: 0; min-height: 100%; }
-.scs-home-image img { width: 100%; height: 100%; max-height: 50rem; object-fit: cover; display: block; }
-.scs-home-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-block-start: 1.45rem; }
+.scs-home-hero h1 { max-width: 13ch; font-size: clamp(3rem, 7vw, 6.35rem); }
+.scs-home-hero-copy p { max-width: 36ch; font-size: clamp(1rem, 1.9vw, 1.16rem); }
+.scs-home-image, .scs-itinerary-hero__image { position: absolute; z-index: -2; inset: 0; margin: 0 !important; }
+.scs-home-image img, .scs-itinerary-hero__image img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.scs-home-image img { object-position: 62% 52%; }
+.scs-home-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-block-start: 1.2rem; }
+.scs-home-actions .scs-button { background: var(--scs-cream); border-color: var(--scs-cream); color: var(--scs-espresso); }
+.scs-home-actions .scs-button:hover { background: var(--scs-sand); border-color: var(--scs-sand); }
+.scs-home-actions .scs-button--outline { background: transparent; color: var(--scs-paper); }
+.scs-home-actions .scs-button--outline:hover { background: var(--scs-cream); color: var(--scs-espresso); }
+.scs-home-actions .scs-button:focus-visible { outline-color: var(--scs-paper); }
 .scs-section-head { display: flex; justify-content: space-between; align-items: baseline; gap: .75rem 2rem; flex-wrap: wrap; }
 .scs-section-head h2 { margin-block: 0 .42em; }
 .scs-invitation { background: var(--scs-espresso); color: var(--scs-cream); padding-inline: clamp(1.25rem, 5vw, 4rem); box-sizing: border-box; margin-block-end: 2rem; }
 .scs-invitation p { max-width: 55ch; }
 
 .scs-filter-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: .9rem; align-items: end; margin: 0 0 1.25rem; }
-.scs-finder .scs-filter-form { max-width: 50rem; grid-template-columns: 1fr 1fr auto; }
-.scs-field { display: grid; gap: .38rem; font-size: .88rem; font-weight: 600; }
+.scs-finder { margin-block: clamp(.65rem, 1.6vw, 1.15rem) 0 !important; }
+.scs-finder .scs-filter-form, .scs-catalogue .scs-filter-form { padding: clamp(.8rem, 2.2vw, 1.45rem); border: 1px solid var(--scs-line); background: var(--scs-paper); }
+.scs-finder .scs-filter-form { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(9rem, .54fr); margin-block: 0; }
+.scs-field { display: grid; gap: .38rem; min-width: 0; font-size: .88rem; font-weight: 600; }
 .scs-field select, .scs-main :where(input:not([type=checkbox]):not([type=radio]), textarea, select) {
 	color: var(--scs-espresso);
 	background: var(--scs-paper);
@@ -124,6 +144,10 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 	padding: .56rem .65rem;
 }
 .scs-filter-form button { justify-self: stretch; }
+.scs-catalogue-head { padding-block: clamp(2.5rem, 5vw, 4.5rem) 1.3rem; }
+.scs-catalogue-head p { margin-block-end: 0; }
+.scs-catalogue { padding-block-start: .65rem; }
+.scs-catalogue .scs-results-heading { margin-block-start: clamp(1.6rem, 4vw, 3rem); }
 .scs-chips, .scs-pagination ul { list-style: none; display: flex; flex-wrap: wrap; gap: .55rem; margin: 1rem 0 1.5rem; padding: 0; }
 .scs-chips a { border: 1px solid var(--scs-line); padding: .3rem .6rem; display: inline-block; font-size: .87rem; text-decoration: none; }
 .scs-chips a:hover { background: var(--scs-sand); }
@@ -142,10 +166,21 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 .scs-card__body > *, .scs-price, .scs-rate-note { margin: 0; }
 .scs-card__meta, .scs-eyeline { font-size: .84rem; font-weight: 620; color: var(--scs-muted); }
 .scs-card__price { border-top: 1px solid var(--scs-line); padding-block-start: .64rem; display: flex; justify-content: space-between; gap: .45rem; margin-block-start: auto; }
+:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child { grid-column: 1 / -1; }
+:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child .scs-card__body { justify-content: center; padding: clamp(1.1rem, 3.5vw, 3rem); }
+:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child h3 { font-size: clamp(1.85rem, 4vw, 3rem); }
+:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child .scs-card__price { margin-block-start: .55rem; }
 .scs-term-grid a, .scs-reading-list a { display: block; border-bottom: 1px solid var(--scs-line); text-decoration: none; }
 .scs-term-grid a:hover, .scs-reading-list a:hover { text-decoration: underline; }
 .scs-term-grid img, .scs-photo-grid img { aspect-ratio: 4/3; width: 100%; object-fit: cover; display: block; }
 .scs-term-grid a > span, .scs-reading-list a { display: flex; justify-content: space-between; gap: 1rem; padding-block: .65rem; }
+.scs-home-destinations .scs-term-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
+.scs-home-destinations .scs-term-grid a { position: relative; }
+.scs-home-destinations .scs-term-grid a:has(img) { isolation: isolate; border: 0; background: var(--scs-espresso); color: var(--scs-paper); }
+.scs-home-destinations .scs-term-grid a:has(img)::before { position: absolute; inset: 0; background: linear-gradient(0deg, rgb(26 17 13 / 94%), transparent 64%); content: ''; }
+.scs-home-destinations .scs-term-grid a:has(img) > span { position: absolute; inset: auto 0 0; align-items: baseline; padding: clamp(.85rem, 2vw, 1.45rem); font: 400 clamp(1.65rem, 3vw, 2.35rem)/1.1 var(--scs-serif); }
+.scs-home-destinations .scs-term-grid a:has(img) > span > span { font: 1rem/1 sans-serif; }
+.scs-home-destinations .scs-term-grid a:focus-visible { outline-color: var(--scs-espresso); }
 .scs-reading-list { max-width: 45rem; list-style: none; padding: 0; }
 .scs-reading-list a { min-height: 44px; box-sizing: border-box; }
 .scs-guides-query .wp-block-post-template.is-layout-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
@@ -163,6 +198,17 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 .scs-trip-hero .scs-button { margin-block-start: 1rem; }
 .scs-trip-hero__image { margin: 0; min-width: 0; min-height: 100%; }
 .scs-trip-hero__image img { width: 100%; height: 100%; max-height: 47rem; display: block; object-fit: cover; }
+.scs-itinerary-hero { background: var(--scs-paper); }
+.scs-itinerary-hero__lead { background: var(--scs-sand); }
+.scs-itinerary-hero__lead--photo { min-height: clamp(19rem, 40vw, 32rem); background: var(--scs-espresso); }
+.scs-itinerary-hero__heading { max-width: 49rem; padding: clamp(1rem, 4vw, 3.5rem); }
+.scs-itinerary-hero__heading h1 { margin: 0; }
+.scs-itinerary-hero__heading .scs-eyeline { margin: 0 0 .65rem; }
+.scs-itinerary-hero__lead--photo .scs-eyeline { color: var(--scs-cream); }
+.scs-itinerary-hero__summary { display: grid; gap: clamp(1rem, 3.2vw, 3.3rem); padding: clamp(1rem, 3.6vw, 3rem); border: 1px solid var(--scs-line); border-block-start: 0; }
+.scs-itinerary-hero__summary > p { margin: 0; max-width: 65ch; }
+.scs-itinerary-hero__details .scs-facts { margin-block: 0 1rem; }
+.scs-itinerary-hero__details .scs-facts:empty { display: none; }
 .scs-facts { display: flex; flex-wrap: wrap; gap: .75rem 1.4rem; }
 .scs-facts dt { font-size: .84rem; color: var(--scs-muted); }
 .scs-facts dd { margin: 0; font-weight: 650; }
@@ -180,6 +226,24 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 .scs-planner-page { max-width: 46rem; padding-block: clamp(2rem, 5vw, 4rem); }
 .scs-planner { margin-block: 1.25rem; }
 .scs-context { border-block: 1px solid var(--scs-line); background: var(--scs-sand); padding: .65rem 1rem; }
+
+.scs-enquiry-page { background: var(--scs-paper); min-height: 64vh; }
+.scs-enquiry { max-width: 41rem; padding-block: clamp(2rem, 6vw, 5rem); }
+.scs-enquiry__step { padding-block-end: clamp(1rem, 4vw, 2.6rem); }
+.scs-enquiry__step[hidden] { display: none; }
+.scs-enquiry__step + .scs-enquiry__step:not([hidden]) { margin-block-start: 1.5rem; }
+.scs-enquiry__step[hidden] + .scs-enquiry__step { margin-block-start: 0; }
+.scs-enquiry h1, .scs-enquiry h2 { max-width: 17ch; font-size: clamp(3rem, 7vw, 5rem); }
+.scs-enquiry__step > p:not(.scs-enquiry__progress) { max-width: 45ch; font-size: clamp(1rem, 2vw, 1.18rem); }
+.scs-enquiry__step > .scs-button { margin-block-start: .65rem; }
+.scs-enquiry__step > .scs-enquiry__progress { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem .8rem; margin: 0 0 .5rem; color: var(--scs-muted); font-size: .87rem; font-weight: 600; }
+.scs-enquiry__bar { display: block; width: 100%; height: 4px; appearance: none; border: 0; background: var(--scs-line); margin-block-end: clamp(1.65rem, 4vw, 2.9rem); }
+.scs-enquiry__bar::-webkit-progress-bar { background: var(--scs-line); }
+.scs-enquiry__bar::-webkit-progress-value { background: var(--scs-espresso); }
+.scs-enquiry__bar::-moz-progress-bar { background: var(--scs-espresso); }
+.scs-enquiry__back { display: inline-flex; align-items: center; min-height: 44px; margin-block: 0 .65rem; font-size: .88rem; }
+#enquiry-details .forminator-ui.forminator-custom-form .forminator-button-submit { background: var(--scs-espresso); color: var(--scs-paper); min-height: 44px; }
+#enquiry-details .forminator-ui.forminator-custom-form .forminator-button-submit:hover { background: #422b20; color: var(--scs-paper); }
 
 .scs-site-footer { color: var(--scs-cream); background: var(--scs-espresso); margin-block-start: 0; }
 .scs-footer-inner { display: grid; grid-template-columns: minmax(15rem, 1fr) repeat(2, minmax(0, .5fr)); gap: 2rem; padding-block: clamp(2rem, 6vw, 4.25rem); }
@@ -202,12 +266,20 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 	.scs-footer-inner { grid-template-columns: 1fr 1fr; }
 	.scs-footer-brand { grid-column: 1 / -1; }
 }
+@media (min-width: 701px) {
+	:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child .scs-card__link:has(.scs-card__image) { display: grid; grid-template-columns: minmax(0, 1.13fr) minmax(0, 1fr); }
+	:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child .scs-card__image { min-height: 18rem; aspect-ratio: 16/9; }
+	.scs-home-destinations .scs-term-grid li:only-child img { aspect-ratio: 2.65; }
+	.scs-itinerary-hero__summary:has(> p) { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+	.scs-itinerary-hero__summary:has(> p) > .scs-itinerary-hero__details { border-inline-start: 1px solid var(--scs-line); padding-inline-start: clamp(1rem, 3.2vw, 3.3rem); }
+}
 @media (max-width: 700px) {
-	.scs-home-hero:has(.scs-home-image img), .scs-trip-hero--photo { grid-template-columns: 1fr; }
-	.scs-home-hero { min-block-size: auto; }
-	.scs-home-image img, .scs-trip-hero__image img { aspect-ratio: 4/3; max-height: 25rem; }
+	.scs-trip-hero--photo { grid-template-columns: 1fr; }
+	.scs-home-hero { min-block-size: clamp(26rem, 115vw, 34rem); }
+	.scs-home-image img { object-position: 71% center; }
+	.scs-trip-hero__image img { aspect-ratio: 4/3; max-height: 25rem; }
 	.scs-finder .scs-filter-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-	.scs-finder button { grid-column: 1 / -1; justify-self: start; }
+	.scs-finder button { grid-column: 1 / -1; }
 	.scs-trip:has(.scs-trip-cta .scs-button) { padding-block-end: 5.5rem; }
 	.scs-trip:has(.scs-trip-cta .scs-button) .scs-trip-hero .scs-button { display: none; }
 	.scs-trip-cta:has(.scs-button) { position: fixed; inset: auto 0 0; z-index: 10; background: var(--scs-cream); padding: .65rem var(--scs-gutter) calc(.65rem + env(safe-area-inset-bottom)); border-block-start: 1px solid var(--scs-line); }
@@ -217,6 +289,9 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 @media (max-width: 560px) {
 	.scs-header-inner { min-height: 64px; }
 	.scs-site-mark img { width: 42px; height: 38px; }
+	.scs-header-action { min-width: 0; }
+	.scs-home-actions { gap: .5rem; }
+	.scs-home-actions .scs-button { padding-inline: .66rem; }
 	.scs-footer-brand .scs-site-mark img { height: auto; }
 	.scs-card-grid, .scs-photo-grid, .scs-two-col, .scs-guides-query .wp-block-post-template.is-layout-grid { grid-template-columns: 1fr; }
 	.scs-footer-inner { gap: 1rem; }

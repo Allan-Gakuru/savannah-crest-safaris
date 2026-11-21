@@ -64,6 +64,9 @@ function sanitize_title_for_query( $value ) {
 	return strtolower( preg_replace( '/[^a-zA-Z0-9-]/', '', $value ) );
 }
 function get_page_by_path( $slug, $output, $type ) {
+	if ( 'enquire' === $slug && isset( $GLOBALS['enquiry_page'] ) ) {
+		return $GLOBALS['enquiry_page'];
+	}
 	if ( 'approved' === $slug || 'internal-draft' === $slug ) {
 		return new WP_Post( 8, 'Reviewed safari', $slug, 'approved' === $slug ? 'publish' : 'draft' );
 	}
@@ -76,6 +79,30 @@ function get_page_by_path( $slug, $output, $type ) {
 }
 function add_action( ...$args ) {}
 function add_filter( ...$args ) {}
+function current_user_can( $capability ) {
+	return in_array( $capability, $GLOBALS['enquiry_capabilities'] ?? array(), true );
+}
+function add_option( $key, $value, $deprecated, $autoload ) {
+	if ( isset( $GLOBALS['enquiry_options'][ $key ] ) ) {
+		return false;
+	}
+	$GLOBALS['enquiry_options'][ $key ] = $value;
+	return true;
+}
+function delete_option( $key ) {
+	unset( $GLOBALS['enquiry_options'][ $key ] );
+}
+function is_wp_error( $value ) {
+	return false;
+}
+function wp_insert_post( $page, $report_errors ) {
+	$GLOBALS['enquiry_insert_attempts']++;
+	if ( ! empty( $GLOBALS['enquiry_insert_fails'] ) ) {
+		return 0;
+	}
+	$GLOBALS['enquiry_page'] = new WP_Post( 80, $page['post_title'], $page['post_name'], $page['post_status'] );
+	return 80;
+}
 function get_option( $name ) {
 	return array( 'id' => 77, 'context_kind' => 'hidden-1', 'context_id' => 'hidden-2', 'context_title' => 'hidden-3' );
 }
@@ -94,6 +121,7 @@ require $plugin . 'planner.php';
 
 use function SavannahCrest\Core\context_from_query;
 use function SavannahCrest\Core\context_from_token;
+use function SavannahCrest\Core\ensure_enquiry_page;
 use function SavannahCrest\Core\filter_query_args;
 use function SavannahCrest\Core\form_settings;
 use function SavannahCrest\Core\itinerary_error;
@@ -175,5 +203,23 @@ check( $saved['hidden-2'], '8', 'Server supplies the authoritative ID' );
 check( planner_entry_context( $entry, 88 ), $entry, 'Other forms are untouched' );
 $_POST['_scs_planner_context'] = 'trip:internal-draft';
 check( array_column( planner_entry_context( $entry, 77 ), 'value', 'name' )['hidden-3'], '', 'Unpublished context stays redacted at submission' );
+
+$GLOBALS['enquiry_insert_attempts'] = 0;
+ensure_enquiry_page();
+check( $GLOBALS['enquiry_insert_attempts'], 0, 'Unprivileged visits do not create the Enquire page' );
+$GLOBALS['enquiry_capabilities'] = array( 'manage_options', 'publish_pages' );
+$GLOBALS['enquiry_insert_fails'] = true;
+ensure_enquiry_page();
+$GLOBALS['enquiry_insert_fails'] = false;
+ensure_enquiry_page();
+ensure_enquiry_page();
+check( $GLOBALS['enquiry_insert_attempts'], 2, 'Provisioning can retry after failure and does not duplicate a successful insert' );
+check( $GLOBALS['enquiry_page']->post_name, 'enquire', 'Provision the dedicated Enquire route' );
+check( $GLOBALS['enquiry_page']->post_status, 'publish', 'The provisioned Enquire page is public' );
+delete_option( 'scs_enquiry_page_provisioned' );
+$GLOBALS['enquiry_page'] = new WP_Post( 81, 'Existing enquiry', 'enquire', 'draft' );
+ensure_enquiry_page();
+check( $GLOBALS['enquiry_insert_attempts'], 2, 'Preserve an existing page with the Enquire slug' );
+check( $GLOBALS['enquiry_page']->post_status, 'draft', 'Leave the existing enquiry publication status to its editor' );
 
 echo "Standalone safari regression checks passed: {$count}.\n";
