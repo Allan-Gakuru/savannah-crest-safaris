@@ -1,0 +1,2 @@
+.cpanel.yml text eol=lf
+tools/deploy-cpanel.sh text eol=lf

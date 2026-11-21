@@ -25,10 +25,9 @@ with stubs. The hosted installation is used for WordPress Admin and website test
 
 ## Hosted setup
 
-1. Merge the pushed revision into the cPanel checkout. Deploy
-   **wp-content/themes/savannah-crest** and **wp-content/plugins/scs-core** into the corresponding
-   directories of the hosted WordPress installation. Record the revision and confirm
-   the installed WordPress, PHP and Secure Custom Fields versions.
+1. Follow the [cPanel connection and deployment guide](docs/build/cpanel-deployment.md).
+   Verify the deployed revision and the installed WordPress, PHP and Secure Custom
+   Fields versions before activating the project files.
 2. Activate Secure Custom Fields with Repeater and Gallery support, then activate
    **Savannah Crest Core**. Check the Safari details fields and sync groups in SCF
    if the installed version reports a versioned definition ready to sync.
