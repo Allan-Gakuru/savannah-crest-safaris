@@ -1,7 +1,7 @@
 /*
 Theme Name: Savannah Crest
 Description: WordPress block theme for Savannah Crest Safaris.
-Version: 0.2.1
+Version: 0.2.2
 Requires at least: 6.4
 Requires PHP: 7.4
 Text Domain: savannah-crest
@@ -95,7 +95,7 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 }
 .scs-home-hero {
 	min-block-size: clamp(30rem, 45vw, 39rem);
-	margin-block: clamp(.65rem, 1.8vw, 1.6rem) 0 !important;
+	margin-block: 0 !important;
 }
 .scs-home-hero::before,
 .scs-itinerary-hero__lead--photo::before {
@@ -106,9 +106,7 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 	background: linear-gradient(0deg, rgb(26 17 13 / 94%), rgb(26 17 13 / 57%) 36%, transparent 82%);
 }
 .scs-home-hero-copy {
-	max-width: 44rem;
-	box-sizing: border-box;
-	padding: clamp(1.1rem, 4.7vw, 4.6rem);
+	padding-block: clamp(1.25rem, 4.7vw, 4.6rem);
 	margin-block: 0 !important;
 }
 .scs-home-hero h1 { max-width: 13ch; font-size: clamp(3rem, 7vw, 6.35rem); text-wrap: balance; }
