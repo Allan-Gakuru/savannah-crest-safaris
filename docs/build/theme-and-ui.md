@@ -13,7 +13,7 @@
 | Element | Launch direction |
 | --- | --- |
 | Palette | Espresso `#2B1A14` for type and primary actions. Light Cream `#F7F1E5` for main surfaces and reverse text. Antique Gold `#B08A48` for accents and decorative detail. Use the approved pairing rules in [Brand.md](../../Brand.md). |
-| Typography | Proposed UI pairing is Instrument Serif for display and Inter for body, controls and numerals. Self-host licensed WOFF2 files and include license text. Use system fallbacks and confirm kerning and reading comfort in the prototype before finalizing. The approved logo is supplied artwork. |
+| Typography | Use Poppins for headings, body copy, navigation, buttons and enquiry fields. Self-host the [Google Fonts Poppins](https://fonts.google.com/specimen/Poppins) WOFF2 files and keep their SIL Open Font License with them. Use system fallbacks for unsupported characters. The approved logo is outlined artwork. |
 | Layout | Target a 76rem wide content frame and a 42–44rem long-form reading column. Use fluid page gutters starting at 1.25rem and generous section spacing. Use one column by default on narrow screens, two at roughly 48rem and three at 70rem where content fits. Adjust at the width where content breaks. |
 | Hierarchy | One H1 per page. Use large photos, a single dominant action per section, substantial whitespace and a restrained border system. Content readability is the priority when type sits over photography. |
 | Primary button | Espresso fill and cream text on cream surfaces. Use a visibly reversed version in dark sections. Make focus, hover, active, pending and disabled states apparent. |

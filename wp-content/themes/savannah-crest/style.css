@@ -1,7 +1,7 @@
 /*
 Theme Name: Savannah Crest
 Description: WordPress block theme for Savannah Crest Safaris.
-Version: 0.2.2
+Version: 0.2.3
 Requires at least: 6.4
 Requires PHP: 7.4
 Text Domain: savannah-crest
@@ -16,11 +16,15 @@ License: GNU General Public License v2 or later
 	--scs-paper: #fffcf6;
 	--scs-muted: #685247;
 	--scs-line: #cbbcaa;
-	--scs-serif: 'Instrument Serif', Georgia, serif;
+	--scs-font: var(--wp--preset--font-family--sans, Poppins, system-ui, sans-serif);
+	--wp--preset--font-family--serif: var(--scs-font);
 	--scs-gutter: clamp(1rem, 4.2vw, 3.5rem);
 }
 
 body { margin: 0; }
+.wp-site-blocks { font-family: var(--scs-font); }
+.has-serif-font-family { font-family: var(--scs-font) !important; }
+:where(.wp-site-blocks) :is(button, input, optgroup, select, textarea) { font-family: inherit; }
 .wp-site-blocks > * + * { margin-block-start: 0; }
 img { max-inline-size: 100%; height: auto; }
 a { text-underline-offset: .22em; overflow-wrap: anywhere; }
@@ -32,9 +36,9 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 .scs-section + .scs-section { border-block-start: 1px solid var(--scs-line); }
 .scs-prose { max-width: 46rem; }
 .scs-prose p { max-inline-size: 68ch; }
-.scs-main h1 { font: 400 clamp(3rem, 7vw, 6.1rem)/.97 var(--scs-serif); margin: 0 0 .22em; letter-spacing: -.035em; overflow-wrap: anywhere; }
-.scs-main h2 { font: 400 clamp(2rem, 4.5vw, 3.5rem)/1.02 var(--scs-serif); margin: 0 0 .5em; letter-spacing: -.02em; }
-.scs-main h3 { font: 400 clamp(1.45rem, 3.2vw, 2.15rem)/1.08 var(--scs-serif); margin: 0 0 .35em; }
+.scs-main h1 { font: 600 clamp(3rem, 7vw, 6.1rem)/1.04 var(--scs-font); margin: 0 0 .22em; letter-spacing: -.045em; overflow-wrap: anywhere; }
+.scs-main h2 { font: 600 clamp(2rem, 4.5vw, 3.5rem)/1.1 var(--scs-font); margin: 0 0 .5em; letter-spacing: -.035em; }
+.scs-main h3 { font: 600 clamp(1.45rem, 3.2vw, 2.15rem)/1.17 var(--scs-font); margin: 0 0 .35em; letter-spacing: -.025em; }
 .scs-main section[id] { scroll-margin-block-start: 2rem; }
 .scs-page-head { padding-block: clamp(2.5rem, 7vw, 5.5rem) clamp(1.5rem, 3vw, 3rem); }
 .scs-page-head p { max-width: 48ch; font-size: clamp(1rem, 2vw, 1.2rem); }
@@ -176,8 +180,8 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 .scs-home-destinations .scs-term-grid a { position: relative; }
 .scs-home-destinations .scs-term-grid a:has(img) { isolation: isolate; border: 0; background: var(--scs-espresso); color: var(--scs-paper); }
 .scs-home-destinations .scs-term-grid a:has(img)::before { position: absolute; inset: 0; background: linear-gradient(0deg, rgb(26 17 13 / 94%), transparent 64%); content: ''; }
-.scs-home-destinations .scs-term-grid a:has(img) > span { position: absolute; inset: auto 0 0; align-items: baseline; padding: clamp(.85rem, 2vw, 1.45rem); font: 400 clamp(1.65rem, 3vw, 2.35rem)/1.1 var(--scs-serif); }
-.scs-home-destinations .scs-term-grid a:has(img) > span > span { font: 1rem/1 sans-serif; }
+.scs-home-destinations .scs-term-grid a:has(img) > span { position: absolute; inset: auto 0 0; align-items: baseline; padding: clamp(.85rem, 2vw, 1.45rem); font: 600 clamp(1.65rem, 3vw, 2.35rem)/1.15 var(--scs-font); }
+.scs-home-destinations .scs-term-grid a:has(img) > span > span { font: 1rem/1 var(--scs-font); }
 .scs-home-destinations .scs-term-grid a:focus-visible { outline-color: var(--scs-espresso); }
 .scs-reading-list { max-width: 45rem; list-style: none; padding: 0; }
 .scs-reading-list a { min-height: 44px; box-sizing: border-box; }
@@ -240,6 +244,11 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 .scs-enquiry__bar::-webkit-progress-value { background: var(--scs-espresso); }
 .scs-enquiry__bar::-moz-progress-bar { background: var(--scs-espresso); }
 .scs-enquiry__back { display: inline-flex; align-items: center; min-height: 44px; margin-block: 0 .65rem; font-size: .88rem; }
+/* Forminator can set fonts on individual controls through its Appearance settings. */
+:is(.scs-planner, #enquiry-details) .forminator-ui.forminator-custom-form,
+:is(.scs-planner, #enquiry-details) .forminator-ui.forminator-custom-form :is(label, button, input, select, textarea, .forminator-description, .forminator-error-message, .forminator-response-message, .forminator-pagination-steps, .select2-selection),
+.forminator-select-dropdown-container,
+.forminator-calendar { font-family: var(--scs-font) !important; }
 #enquiry-details .forminator-ui.forminator-custom-form .forminator-button-submit { background: var(--scs-espresso); color: var(--scs-paper); min-height: 44px; }
 #enquiry-details .forminator-ui.forminator-custom-form .forminator-button-submit:hover { background: #422b20; color: var(--scs-paper); }
 

@@ -103,7 +103,7 @@ def validate_assets():
             for uri in face['src']:
                 file = THEME / uri.removeprefix('file:./')
                 require(file.is_file() and file.read_bytes()[:4] == b'wOF2', f'Invalid WOFF2 file: {file}')
-                require(file.with_name(file.stem + '-OFL.txt').is_file(), f'Missing font license for {file}')
+                require((file.parent / 'OFL.txt').is_file() or file.with_name(file.stem + '-OFL.txt').is_file(), f'Missing font license for {file}')
     brand = THEME / 'assets/brand'
     for asset in brand.iterdir():
         source = ROOT / 'assets/brand' / ('web' if asset.name.startswith(('favicon', 'apple-touch')) else 'svg') / asset.name
@@ -114,7 +114,7 @@ def validate_assets():
             matches = asset.read_bytes() == source.read_bytes()
         require(matches, f'Unapproved asset copy: {asset}')
     require(not (ROOT / 'wp-config.php').exists() and not (ROOT / 'wp-content/uploads').exists(), 'WordPress runtime data in the repository')
-    print(f'Validated {len(list(brand.iterdir()))} brand assets and both font licenses.')
+    print(f'Validated {len(list(brand.iterdir()))} brand assets and the configured fonts and licenses.')
 
 
 if __name__ == '__main__':
