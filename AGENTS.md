@@ -26,3 +26,4 @@ For a new build, follow this dependency order: theme and core plugin → content
 - Keep public content and catalogue results in server-rendered HTML. Enhance with JavaScript where it improves the flow. Check normal navigation, keyboard and mobile behavior, and empty/error states.
 - Keep secrets, leads, supplier contracts, private rates, and production exports with personal data out of the public repo. Work in local or staging first. Use an approved release path for production changes and external integrations.
 - Verify the feature against the acceptance criteria in its guide. Record any migration, rollback step, dependency, or unfinished assumption that affects the next build.
+- Use the terminal for Git operations. After every verified repository update, commit the task's changes, push them to `origin/main`, and confirm GitHub has the new commit. If the remote has moved, integrate its changes before pushing. Respect branch protection and report any blocker.
