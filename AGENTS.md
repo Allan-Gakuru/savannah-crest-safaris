@@ -2,7 +2,7 @@
 
 Read this file at the start of every build or maintenance task in this repository. Read [the master plan](docs/build/master-plan.md) first, then open every guide that applies to the requested change. The guides are the implementation contract. When the feature changes, update the relevant guide and implementation together. Follow the owner's current direction when it supersedes a documented choice.
 
-For a new build, follow this dependency order: theme and core plugin → content model → one working itinerary and enquiry → catalogue → landing templates → approved inventory → SEO and release. For a targeted change, start at the relevant guide and check downstream templates, links, and enquiry behavior.
+For a new build, set up local and staging, then build the theme, core plugin, content model, and WP Admin safari entry workflow. Once an editor can save a safari draft, enter a test safari and verify the destination → itinerary → enquiry journey. Then expand the catalogue and landing templates, enter approved launch inventory, and complete SEO and release checks. For a targeted change, start at the relevant guide and check downstream templates, links, and enquiry behavior.
 
 ## Route each task to its instructions
 
