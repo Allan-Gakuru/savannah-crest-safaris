@@ -1,0 +1,143 @@
+{
+  "$schema": "https://schemas.wp.org/wp/6.4/theme.json",
+  "version": 2,
+  "settings": {
+    "appearanceTools": true,
+    "layout": {
+      "contentSize": "46rem",
+      "wideSize": "76rem"
+    },
+    "color": {
+      "defaultPalette": false,
+      "defaultGradients": false,
+      "defaultDuotone": false,
+      "palette": [
+        {
+          "slug": "espresso",
+          "name": "Espresso",
+          "color": "#2B1A14"
+        },
+        {
+          "slug": "cream",
+          "name": "Light cream",
+          "color": "#F7F1E5"
+        },
+        {
+          "slug": "gold",
+          "name": "Antique gold",
+          "color": "#B08A48"
+        },
+        {
+          "slug": "sand",
+          "name": "Pale sand",
+          "color": "#EEE2D2"
+        },
+        {
+          "slug": "paper",
+          "name": "Paper",
+          "color": "#FFFCF6"
+        }
+      ]
+    },
+    "spacing": {
+      "units": [
+        "px",
+        "rem",
+        "em",
+        "vw",
+        "%"
+      ]
+    },
+    "typography": {
+      "fluid": true,
+      "fontFamilies": [
+        {
+          "slug": "sans",
+          "name": "Inter",
+          "fontFamily": "Inter, system-ui, sans-serif",
+          "fontFace": [
+            {
+              "fontStyle": "normal",
+              "src": [
+                "file:./assets/fonts/inter.woff2"
+              ],
+              "fontWeight": "400 700",
+              "fontFamily": "Inter",
+              "fontDisplay": "swap"
+            }
+          ]
+        },
+        {
+          "slug": "serif",
+          "name": "Instrument Serif",
+          "fontFamily": "'Instrument Serif', Georgia, serif",
+          "fontFace": [
+            {
+              "fontStyle": "normal",
+              "src": [
+                "file:./assets/fonts/instrument-serif.woff2"
+              ],
+              "fontWeight": "400",
+              "fontFamily": "Instrument Serif",
+              "fontDisplay": "swap"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "styles": {
+    "color": {
+      "background": "var:preset|color|cream",
+      "text": "var:preset|color|espresso"
+    },
+    "typography": {
+      "fontFamily": "var:preset|font-family|sans",
+      "fontSize": "1rem",
+      "lineHeight": "1.65"
+    },
+    "spacing": {
+      "blockGap": "1.35rem"
+    },
+    "elements": {
+      "heading": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|serif",
+          "fontWeight": "400",
+          "lineHeight": "1.05"
+        }
+      },
+      "link": {
+        "color": {
+          "text": "var:preset|color|espresso"
+        }
+      },
+      "button": {
+        "border": {
+          "radius": "0"
+        },
+        "color": {
+          "background": "var:preset|color|espresso",
+          "text": "var:preset|color|cream"
+        }
+      }
+    }
+  },
+  "templateParts": [
+    {
+      "name": "header",
+      "area": "header",
+      "title": "Header"
+    },
+    {
+      "name": "planner-header",
+      "area": "header",
+      "title": "Planner Header"
+    },
+    {
+      "name": "footer",
+      "area": "footer",
+      "title": "Footer"
+    }
+  ]
+}

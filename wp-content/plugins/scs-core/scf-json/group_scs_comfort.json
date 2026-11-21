@@ -1,0 +1,47 @@
+{
+  "key": "group_scs_comfort",
+  "title": "Comfort level",
+  "fields": [
+    {
+      "key": "field_scs_comfort_tier",
+      "label": "Comfort level",
+      "name": "scs_comfort_tier",
+      "type": "taxonomy",
+      "instructions": "",
+      "required": 0,
+      "taxonomy": "scs_comfort",
+      "field_type": "select",
+      "return_format": "id",
+      "add_term": 0,
+      "save_terms": 1,
+      "load_terms": 1,
+      "allow_null": 1
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "scs_safari"
+      }
+    ],
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "scs_stay"
+      }
+    ]
+  ],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": [],
+  "active": true,
+  "description": "",
+  "show_in_rest": 0,
+  "modified": 1795270766
+}

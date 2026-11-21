@@ -1,0 +1,52 @@
+{
+  "key": "group_scs_guide",
+  "title": "Guide details",
+  "fields": [
+    {
+      "key": "field_scs_guide_reviewed_on",
+      "label": "Last reviewed",
+      "name": "scs_guide_reviewed_on",
+      "type": "date_picker",
+      "instructions": "",
+      "required": 0,
+      "display_format": "j F Y",
+      "return_format": "Ymd"
+    },
+    {
+      "key": "field_scs_guide_trips",
+      "label": "Recommended safaris",
+      "name": "scs_guide_trips",
+      "type": "relationship",
+      "instructions": "",
+      "required": 0,
+      "post_type": [
+        "scs_safari"
+      ],
+      "return_format": "id",
+      "filters": [
+        "search",
+        "post_type",
+        "taxonomy"
+      ]
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "post"
+      }
+    ]
+  ],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": [],
+  "active": true,
+  "description": "",
+  "show_in_rest": 0,
+  "modified": 1795270766
+}

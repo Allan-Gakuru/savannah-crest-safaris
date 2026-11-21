@@ -1,0 +1,469 @@
+{
+  "key": "group_scs_safari",
+  "title": "Safari details",
+  "fields": [
+    {
+      "key": "field_scs_route_tab",
+      "label": "Route",
+      "name": "scs_route_tab",
+      "type": "tab",
+      "instructions": "",
+      "required": 0
+    },
+    {
+      "key": "field_scs_duration_days",
+      "label": "Duration in days",
+      "name": "scs_duration_days",
+      "type": "number",
+      "instructions": "",
+      "required": 0,
+      "min": 1,
+      "step": 1
+    },
+    {
+      "key": "field_scs_primary_destination",
+      "label": "Primary destination",
+      "name": "scs_primary_destination",
+      "type": "taxonomy",
+      "instructions": "Assign the destination in the Destinations panel before selecting it here.",
+      "required": 0,
+      "taxonomy": "scs_destination",
+      "field_type": "select",
+      "return_format": "id",
+      "add_term": 0,
+      "save_terms": 0,
+      "load_terms": 0
+    },
+    {
+      "key": "field_scs_start_location",
+      "label": "Starts in",
+      "name": "scs_start_location",
+      "type": "text",
+      "instructions": "",
+      "required": 0
+    },
+    {
+      "key": "field_scs_end_location",
+      "label": "Ends in",
+      "name": "scs_end_location",
+      "type": "text",
+      "instructions": "",
+      "required": 0
+    },
+    {
+      "key": "field_scs_itinerary",
+      "label": "Itinerary days",
+      "name": "scs_itinerary",
+      "type": "repeater",
+      "instructions": "",
+      "required": 0,
+      "layout": "block",
+      "button_label": "Add itinerary day",
+      "sub_fields": [
+        {
+          "key": "field_scs_itinerary_day_from",
+          "label": "First day",
+          "name": "day_from",
+          "type": "number",
+          "instructions": "",
+          "required": 0,
+          "min": 1,
+          "step": 1
+        },
+        {
+          "key": "field_scs_itinerary_day_to",
+          "label": "Last day (optional)",
+          "name": "day_to",
+          "type": "number",
+          "instructions": "",
+          "required": 0,
+          "min": 1,
+          "step": 1
+        },
+        {
+          "key": "field_scs_itinerary_heading",
+          "label": "Day title",
+          "name": "heading",
+          "type": "text",
+          "instructions": "",
+          "required": 0
+        },
+        {
+          "key": "field_scs_itinerary_destination",
+          "label": "Destination",
+          "name": "destination",
+          "type": "taxonomy",
+          "instructions": "",
+          "required": 0,
+          "taxonomy": "scs_destination",
+          "field_type": "select",
+          "return_format": "id",
+          "add_term": 0,
+          "save_terms": 0,
+          "load_terms": 0
+        },
+        {
+          "key": "field_scs_itinerary_narrative",
+          "label": "Day description",
+          "name": "narrative",
+          "type": "wysiwyg",
+          "instructions": "",
+          "required": 0,
+          "tabs": "all",
+          "toolbar": "basic",
+          "media_upload": 0
+        },
+        {
+          "key": "field_scs_itinerary_stay",
+          "label": "Linked stay",
+          "name": "stay",
+          "type": "post_object",
+          "instructions": "",
+          "required": 0,
+          "post_type": [
+            "scs_stay"
+          ],
+          "return_format": "id",
+          "allow_null": 1
+        },
+        {
+          "key": "field_scs_itinerary_stay_label",
+          "label": "Stay label",
+          "name": "stay_label",
+          "type": "text",
+          "instructions": "",
+          "required": 0
+        },
+        {
+          "key": "field_scs_itinerary_meals",
+          "label": "Meals",
+          "name": "meals",
+          "type": "text",
+          "instructions": "",
+          "required": 0
+        },
+        {
+          "key": "field_scs_itinerary_transfer_note",
+          "label": "Transfer",
+          "name": "transfer_note",
+          "type": "text",
+          "instructions": "",
+          "required": 0
+        },
+        {
+          "key": "field_scs_itinerary_image",
+          "label": "Day image",
+          "name": "image",
+          "type": "image",
+          "instructions": "",
+          "required": 0,
+          "return_format": "id",
+          "preview_size": "medium",
+          "library": "all"
+        }
+      ],
+      "collapsed": "field_scs_itinerary_heading"
+    },
+    {
+      "key": "field_scs_pricing_tab",
+      "label": "Price and inclusions",
+      "name": "scs_pricing_tab",
+      "type": "tab",
+      "instructions": "",
+      "required": 0
+    },
+    {
+      "key": "field_scs_price_mode",
+      "label": "Price display",
+      "name": "scs_price_mode",
+      "type": "select",
+      "instructions": "",
+      "required": 0,
+      "choices": {
+        "on_request": "Price on request",
+        "from": "From",
+        "range": "Range"
+      },
+      "default_value": "on_request",
+      "return_format": "value"
+    },
+    {
+      "key": "field_scs_price_from",
+      "label": "Starting price",
+      "name": "scs_price_from",
+      "type": "number",
+      "instructions": "",
+      "required": 0,
+      "min": 0.01,
+      "step": 0.01,
+      "conditional_logic": [
+        [
+          {
+            "field": "field_scs_price_mode",
+            "operator": "!=",
+            "value": "on_request"
+          }
+        ]
+      ]
+    },
+    {
+      "key": "field_scs_price_to",
+      "label": "Upper price",
+      "name": "scs_price_to",
+      "type": "number",
+      "instructions": "",
+      "required": 0,
+      "min": 0.01,
+      "step": 0.01,
+      "conditional_logic": [
+        [
+          {
+            "field": "field_scs_price_mode",
+            "operator": "==",
+            "value": "range"
+          }
+        ]
+      ]
+    },
+    {
+      "key": "field_scs_price_currency",
+      "label": "Currency",
+      "name": "scs_price_currency",
+      "type": "select",
+      "instructions": "",
+      "required": 0,
+      "choices": {
+        "USD": "USD"
+      },
+      "default_value": "USD",
+      "conditional_logic": [
+        [
+          {
+            "field": "field_scs_price_mode",
+            "operator": "!=",
+            "value": "on_request"
+          }
+        ]
+      ]
+    },
+    {
+      "key": "field_scs_price_basis",
+      "label": "Price basis",
+      "name": "scs_price_basis",
+      "type": "select",
+      "instructions": "",
+      "required": 0,
+      "choices": {
+        "per_person_sharing": "Per person sharing",
+        "per_group": "Per group"
+      },
+      "default_value": "per_person_sharing",
+      "conditional_logic": [
+        [
+          {
+            "field": "field_scs_price_mode",
+            "operator": "!=",
+            "value": "on_request"
+          }
+        ]
+      ]
+    },
+    {
+      "key": "field_scs_price_note",
+      "label": "Rate conditions",
+      "name": "scs_price_note",
+      "type": "textarea",
+      "instructions": "",
+      "required": 0,
+      "rows": 3,
+      "conditional_logic": [
+        [
+          {
+            "field": "field_scs_price_mode",
+            "operator": "!=",
+            "value": "on_request"
+          }
+        ]
+      ]
+    },
+    {
+      "key": "field_scs_price_valid_until",
+      "label": "Valid through",
+      "name": "scs_price_valid_until",
+      "type": "date_picker",
+      "instructions": "",
+      "required": 0,
+      "display_format": "j F Y",
+      "return_format": "Ymd",
+      "conditional_logic": [
+        [
+          {
+            "field": "field_scs_price_mode",
+            "operator": "!=",
+            "value": "on_request"
+          }
+        ]
+      ]
+    },
+    {
+      "key": "field_scs_includes",
+      "label": "Inclusions",
+      "name": "scs_includes",
+      "type": "repeater",
+      "instructions": "",
+      "required": 0,
+      "layout": "table",
+      "button_label": "Add item",
+      "sub_fields": [
+        {
+          "key": "field_scs_includes_label",
+          "label": "Item",
+          "name": "label",
+          "type": "text",
+          "instructions": "",
+          "required": 0
+        }
+      ]
+    },
+    {
+      "key": "field_scs_excludes",
+      "label": "Exclusions",
+      "name": "scs_excludes",
+      "type": "repeater",
+      "instructions": "",
+      "required": 0,
+      "layout": "table",
+      "button_label": "Add item",
+      "sub_fields": [
+        {
+          "key": "field_scs_excludes_label",
+          "label": "Item",
+          "name": "label",
+          "type": "text",
+          "instructions": "",
+          "required": 0
+        }
+      ]
+    },
+    {
+      "key": "field_scs_presentation_tab",
+      "label": "Presentation",
+      "name": "scs_presentation_tab",
+      "type": "tab",
+      "instructions": "",
+      "required": 0
+    },
+    {
+      "key": "field_scs_highlights",
+      "label": "Highlights",
+      "name": "scs_highlights",
+      "type": "repeater",
+      "instructions": "",
+      "required": 0,
+      "layout": "table",
+      "button_label": "Add item",
+      "sub_fields": [
+        {
+          "key": "field_scs_highlights_label",
+          "label": "Item",
+          "name": "label",
+          "type": "text",
+          "instructions": "",
+          "required": 0
+        }
+      ]
+    },
+    {
+      "key": "field_scs_gallery",
+      "label": "Safari gallery",
+      "name": "scs_gallery",
+      "type": "gallery",
+      "instructions": "",
+      "required": 0,
+      "return_format": "id",
+      "preview_size": "medium",
+      "library": "all"
+    },
+    {
+      "key": "field_scs_best_time",
+      "label": "Best time to go",
+      "name": "scs_best_time",
+      "type": "repeater",
+      "instructions": "",
+      "required": 0,
+      "layout": "block",
+      "button_label": "Add row",
+      "sub_fields": [
+        {
+          "key": "field_scs_best_time_months",
+          "label": "Months",
+          "name": "months",
+          "type": "checkbox",
+          "instructions": "",
+          "required": 0,
+          "choices": {
+            "1": "January",
+            "2": "February",
+            "3": "March",
+            "4": "April",
+            "5": "May",
+            "6": "June",
+            "7": "July",
+            "8": "August",
+            "9": "September",
+            "10": "October",
+            "11": "November",
+            "12": "December"
+          },
+          "return_format": "label",
+          "layout": "horizontal"
+        },
+        {
+          "key": "field_scs_best_time_note",
+          "label": "What to expect",
+          "name": "note",
+          "type": "textarea",
+          "instructions": "",
+          "required": 0,
+          "rows": 3
+        }
+      ]
+    },
+    {
+      "key": "field_scs_related_safaris",
+      "label": "Related safaris",
+      "name": "scs_related_safaris",
+      "type": "relationship",
+      "instructions": "",
+      "required": 0,
+      "post_type": [
+        "scs_safari"
+      ],
+      "return_format": "id",
+      "filters": [
+        "search",
+        "post_type",
+        "taxonomy"
+      ]
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "scs_safari"
+      }
+    ]
+  ],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": [],
+  "active": true,
+  "description": "",
+  "show_in_rest": 1,
+  "modified": 1795270766
+}

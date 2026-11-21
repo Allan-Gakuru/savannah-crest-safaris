@@ -21,6 +21,13 @@ Use **Explore safaris** for browsing and **Plan your safari** for the main lead 
 7. Persist the entry first, then send the assigned planner a notification with a reference. Use authenticated transactional mail with an approved From address and the visitor as Reply-To. Send the guest a short acknowledgement and show a success state giving the next step. Confirm notification failures can be retried or handled from the stored entries. Disable the submit control while pending and reconcile duplicate submissions without creating duplicate leads.
 8. Keep detailed requirements such as flight availability, room combinations and rate adjustments for the advisor's response. Define routing and fallback owner for leads before go-live. Store first-party attribution such as UTM source, medium, campaign and originating public page when approved and available. Keep marketing consent and enquiry handling as separate records where applicable.
 
+## Hosted Forminator configuration
+
+1. In Forminator, publish a two-step form using the fields and rules above. Enable stored submissions, AJAX submission, the inline confirmation, and the approved spam protection. Use normal page rendering for this form so the verified trip context is present when it renders.
+2. Add three distinct Hidden fields for context type, context ID, and context title. Use blank custom defaults. Copy their field IDs and the published form ID to **Settings → Safari Planner**. The planner template embeds the configured form, so the editorial Page only needs its title and any introductory copy.
+3. In the planner notification, include the three context fields and the submission reference using Forminator's merge fields. Configure the approved recipient, authenticated From address, Reply-To and visitor acknowledgement. Use private WP Admin submissions to confirm the authoritative stored values.
+4. Exclude **/plan-your-safari/**, including contextual variants, in cPanel, caching plugins, and any CDN. The plugin also sends no-cache headers. Test the form from two different published itineraries after deployment.
+
 ## Conversion measurement and operations
 
 | Event | When to fire | Allowed context |
@@ -31,6 +38,8 @@ Use **Explore safaris** for browsing and **Plan your safari** for the main lead 
 | `enquiry_start` | First meaningful interaction with planner | Context type, public trip ID and surface |
 | `enquiry_step_complete` | First step validation succeeds | Step number and context type |
 | `enquiry_submit_success` | Unique accepted lead confirmed by the form | Public trip ID and completion surface. Deduplicate by a non-PII event key. |
+
+The browser emits a scs:analytics event after statistics consent through the WordPress Consent API. Connect the approved analytics listener to its event detail, which contains public context only. Test that moving back and forward or receiving repeated success callbacks does not emit the same step or submission event twice.
 
 Respect the site's configured consent behavior. Keep names, email addresses, phones, free-text messages and personal travel details out of analytics and tracking URLs. Track WhatsApp and phone clicks as contact intent, separately from a stored web lead. Review submissions, qualified leads, delivery failures and form abandonment with the business owner. Establish a baseline before considering a longer planner.
 

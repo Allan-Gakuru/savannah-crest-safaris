@@ -1,0 +1,74 @@
+{
+  "key": "group_scs_stay",
+  "title": "Stay details",
+  "fields": [
+    {
+      "key": "field_scs_stay_gallery",
+      "label": "Stay gallery",
+      "name": "scs_stay_gallery",
+      "type": "gallery",
+      "instructions": "",
+      "required": 0,
+      "return_format": "id",
+      "preview_size": "medium",
+      "library": "all"
+    },
+    {
+      "key": "field_scs_stay_facilities",
+      "label": "Facilities",
+      "name": "scs_stay_facilities",
+      "type": "repeater",
+      "instructions": "",
+      "required": 0,
+      "layout": "table",
+      "button_label": "Add item",
+      "sub_fields": [
+        {
+          "key": "field_scs_stay_facilities_label",
+          "label": "Item",
+          "name": "label",
+          "type": "text",
+          "instructions": "",
+          "required": 0
+        }
+      ]
+    },
+    {
+      "key": "field_scs_stay_transfer",
+      "label": "Transfer information",
+      "name": "scs_stay_transfer",
+      "type": "textarea",
+      "instructions": "",
+      "required": 0,
+      "rows": 3
+    },
+    {
+      "key": "field_scs_stay_access_notes",
+      "label": "Accessibility notes",
+      "name": "scs_stay_access_notes",
+      "type": "textarea",
+      "instructions": "",
+      "required": 0,
+      "rows": 3
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "scs_stay"
+      }
+    ]
+  ],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": [],
+  "active": true,
+  "description": "",
+  "show_in_rest": 0,
+  "modified": 1795270766
+}

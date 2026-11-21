@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "scs/stay-details",
+  "title": "Stay details",
+  "category": "widgets",
+  "icon": "location-alt",
+  "description": "Show facilities, accessibility, photos and related trips.",
+  "textdomain": "scs-core",
+  "usesContext": [
+    "postId",
+    "postType"
+  ],
+  "supports": {
+    "html": false,
+    "inserter": false
+  },
+  "editorScript": "scs-block-editor"
+}

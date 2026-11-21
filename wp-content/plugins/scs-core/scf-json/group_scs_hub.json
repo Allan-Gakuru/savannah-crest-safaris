@@ -1,0 +1,135 @@
+{
+  "key": "group_scs_hub",
+  "title": "Hub content",
+  "fields": [
+    {
+      "key": "field_scs_term_hero",
+      "label": "Hero photograph",
+      "name": "scs_term_hero",
+      "type": "image",
+      "instructions": "",
+      "required": 0,
+      "return_format": "id",
+      "preview_size": "medium",
+      "library": "all"
+    },
+    {
+      "key": "field_scs_term_intro",
+      "label": "Introduction",
+      "name": "scs_term_intro",
+      "type": "textarea",
+      "instructions": "",
+      "required": 0,
+      "rows": 3
+    },
+    {
+      "key": "field_scs_term_body",
+      "label": "Planning advice",
+      "name": "scs_term_body",
+      "type": "wysiwyg",
+      "instructions": "",
+      "required": 0,
+      "toolbar": "basic",
+      "media_upload": 0
+    },
+    {
+      "key": "field_scs_term_ready",
+      "label": "Ready for discovery and indexing",
+      "name": "scs_term_ready",
+      "type": "true_false",
+      "instructions": "Enable when this hub has original visitor guidance and is ready to appear in site navigation and search.",
+      "required": 0,
+      "ui": 1,
+      "default_value": 0
+    },
+    {
+      "key": "field_scs_term_faqs",
+      "label": "Frequently asked questions",
+      "name": "scs_term_faqs",
+      "type": "repeater",
+      "instructions": "",
+      "required": 0,
+      "layout": "block",
+      "button_label": "Add row",
+      "sub_fields": [
+        {
+          "key": "field_scs_term_faqs_question",
+          "label": "Question",
+          "name": "question",
+          "type": "text",
+          "instructions": "",
+          "required": 0
+        },
+        {
+          "key": "field_scs_term_faqs_answer",
+          "label": "Answer",
+          "name": "answer",
+          "type": "textarea",
+          "instructions": "",
+          "required": 0,
+          "rows": 3
+        }
+      ]
+    },
+    {
+      "key": "field_scs_term_featured_trips",
+      "label": "Featured safaris",
+      "name": "scs_term_featured_trips",
+      "type": "relationship",
+      "instructions": "",
+      "required": 0,
+      "post_type": [
+        "scs_safari"
+      ],
+      "return_format": "id",
+      "filters": [
+        "search",
+        "post_type",
+        "taxonomy"
+      ]
+    },
+    {
+      "key": "field_scs_term_guides",
+      "label": "Planning guides",
+      "name": "scs_term_guides",
+      "type": "relationship",
+      "instructions": "",
+      "required": 0,
+      "post_type": [
+        "post"
+      ],
+      "return_format": "id",
+      "filters": [
+        "search",
+        "post_type",
+        "taxonomy"
+      ]
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "taxonomy",
+        "operator": "==",
+        "value": "scs_destination"
+      }
+    ],
+    [
+      {
+        "param": "taxonomy",
+        "operator": "==",
+        "value": "scs_experience"
+      }
+    ]
+  ],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": [],
+  "active": true,
+  "description": "",
+  "show_in_rest": 0,
+  "modified": 1795270766
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "scs/guide-notes",
+  "title": "Safari guide details",
+  "category": "widgets",
+  "icon": "location-alt",
+  "description": "Show the reviewed date and safari recommendations.",
+  "textdomain": "scs-core",
+  "usesContext": [
+    "postId",
+    "postType"
+  ],
+  "supports": {
+    "html": false,
+    "inserter": false
+  },
+  "editorScript": "scs-block-editor"
+}

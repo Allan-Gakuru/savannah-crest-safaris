@@ -1,0 +1,77 @@
+{
+  "key": "group_scs_seasons",
+  "title": "Destination seasons",
+  "fields": [
+    {
+      "key": "field_scs_term_seasons",
+      "label": "Seasons",
+      "name": "scs_term_seasons",
+      "type": "repeater",
+      "instructions": "",
+      "required": 0,
+      "layout": "block",
+      "button_label": "Add row",
+      "sub_fields": [
+        {
+          "key": "field_scs_term_seasons_months",
+          "label": "Months",
+          "name": "months",
+          "type": "checkbox",
+          "instructions": "",
+          "required": 0,
+          "choices": {
+            "1": "January",
+            "2": "February",
+            "3": "March",
+            "4": "April",
+            "5": "May",
+            "6": "June",
+            "7": "July",
+            "8": "August",
+            "9": "September",
+            "10": "October",
+            "11": "November",
+            "12": "December"
+          },
+          "return_format": "label"
+        },
+        {
+          "key": "field_scs_term_seasons_short_label",
+          "label": "Season label",
+          "name": "short_label",
+          "type": "text",
+          "instructions": "",
+          "required": 0
+        },
+        {
+          "key": "field_scs_term_seasons_conditions",
+          "label": "Conditions",
+          "name": "conditions",
+          "type": "textarea",
+          "instructions": "",
+          "required": 0,
+          "rows": 3
+        }
+      ]
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "taxonomy",
+        "operator": "==",
+        "value": "scs_destination"
+      }
+    ]
+  ],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": [],
+  "active": true,
+  "description": "",
+  "show_in_rest": 0,
+  "modified": 1795270766
+}

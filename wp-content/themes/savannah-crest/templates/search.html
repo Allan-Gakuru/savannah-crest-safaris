@@ -1,0 +1,39 @@
+<!-- wp:template-part {"slug":"header","tagName":"header","area":"header"} /-->
+<!-- wp:group {"tagName":"main","className":"scs-main","layout":{"type":"default"}} -->
+<main class="wp-block-group scs-main">
+<!-- wp:group {"className":"scs-shell scs-page-head","layout":{"type":"default"}} -->
+<div class="wp-block-group scs-shell scs-page-head">
+<!-- wp:query-title {"type":"search","level":1} /-->
+<!-- wp:search {"label":"Search","showLabel":false,"buttonText":"Search"} /-->
+</div>
+<!-- /wp:group -->
+<!-- wp:group {"className":"scs-shell scs-section","layout":{"type":"default"}} -->
+<div class="wp-block-group scs-shell scs-section">
+<!-- wp:query {"query":{"inherit":true},"className":"scs-guides-query"} -->
+<div class="wp-block-query">
+<!-- wp:post-template {"layout":{"type":"grid","columnCount":3}} -->
+<!-- wp:group {"className":"scs-guide-card","layout":{"type":"default"}} -->
+<div class="wp-block-group scs-guide-card">
+<!-- wp:post-featured-image {"isLink":true,"sizeSlug":"medium_large"} /-->
+<!-- wp:post-title {"level":2,"isLink":true} /-->
+<!-- wp:post-excerpt {"excerptLength":24} /-->
+</div>
+<!-- /wp:group -->
+<!-- /wp:post-template -->
+<!-- wp:query-pagination {"layout":{"type":"flex","justifyContent":"center"}} -->
+<!-- wp:query-pagination-previous /-->
+<!-- wp:query-pagination-numbers /-->
+<!-- wp:query-pagination-next /-->
+<!-- /wp:query-pagination -->
+<!-- wp:query-no-results -->
+<!-- wp:paragraph -->
+<p>There are no guides to show here yet.</p>
+<!-- /wp:paragraph -->
+<!-- /wp:query-no-results -->
+</div>
+<!-- /wp:query -->
+</div>
+<!-- /wp:group -->
+</main>
+<!-- /wp:group -->
+<!-- wp:template-part {"slug":"footer","tagName":"footer","area":"footer"} /-->

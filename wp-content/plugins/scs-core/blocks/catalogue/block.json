@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "scs/catalogue",
+  "title": "Safari catalogue",
+  "category": "widgets",
+  "icon": "location-alt",
+  "description": "Display archive filters, results and pagination.",
+  "textdomain": "scs-core",
+  "usesContext": [
+    "postId",
+    "postType"
+  ],
+  "supports": {
+    "html": false,
+    "inserter": false
+  },
+  "editorScript": "scs-block-editor"
+}
