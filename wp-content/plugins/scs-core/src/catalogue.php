@@ -38,6 +38,16 @@ function inventory_terms(): array {
 				}
 			}
 		}
+		if ( DESTINATION === $taxonomy ) {
+			foreach ( DESTINATION_REGIONS as $region => $country ) {
+				if ( isset( $inventory[ $key ][ $region ] ) && ! isset( $inventory[ $key ][ $country ] ) ) {
+					$country_term = get_term_by( 'slug', $country, DESTINATION );
+					if ( $country_term instanceof \WP_Term ) {
+						$inventory[ $key ][ $country ] = $country_term;
+					}
+				}
+			}
+		}
 		uasort( $inventory[ $key ], static function ( \WP_Term $first, \WP_Term $second ): int {
 			return strnatcasecmp( $first->name, $second->name );
 		} );
@@ -114,13 +124,9 @@ function filter_query_args( array $filters, array $inventory ): array {
 	}
 	$values = $filters['values'];
 	$terms = array( 'relation' => 'AND' );
-	foreach ( array( 'where' => DESTINATION, 'experience' => EXPERIENCE, 'comfort' => COMFORT ) as $filter => $taxonomy ) {
+	foreach ( array( 'where', 'experience', 'comfort' ) as $filter ) {
 		if ( isset( $values[ $filter ] ) ) {
-			$term = $inventory[ $filter ][ $values[ $filter ] ];
-			$terms[] = array(
-				'taxonomy' => $taxonomy, 'field' => 'term_id', 'terms' => array( $term->term_id ),
-				'include_children' => DESTINATION === $taxonomy,
-			);
+			$terms[] = term_clause( $inventory[ $filter ][ $values[ $filter ] ] );
 		}
 	}
 	if ( count( $terms ) > 1 ) {
@@ -177,5 +183,12 @@ function matching_safaris( array $terms, array $pinned = array(), int $limit = 6
 }
 
 function term_clause( \WP_Term $term ): array {
-	return array( 'taxonomy' => $term->taxonomy, 'field' => 'term_id', 'terms' => array( $term->term_id ), 'include_children' => DESTINATION === $term->taxonomy );
+	$ids = array( $term->term_id );
+	foreach ( destination_regions( $term ) as $slug ) {
+		$region = get_term_by( 'slug', $slug, DESTINATION );
+		if ( $region instanceof \WP_Term ) {
+			$ids[] = $region->term_id;
+		}
+	}
+	return array( 'taxonomy' => $term->taxonomy, 'field' => 'term_id', 'terms' => $ids, 'include_children' => DESTINATION === $term->taxonomy );
 }

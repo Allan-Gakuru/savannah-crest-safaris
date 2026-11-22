@@ -17,19 +17,14 @@ if ( 'finder' === $section ) {
 $front = (int) get_option( 'page_on_front' );
 $safaris = matching_safaris( array(), $front ? ids( field( 'scs_home_featured_trips', $front ) ) : array(), 3 );
 $place_picks = $front ? ids( field( 'scs_home_featured_places', $front ) ) : array();
-$places = array_column( ready_terms( DESTINATION, array(), $place_picks, 3 ), null, 'term_id' );
-$inventory_places = array_column( inventory_terms()['where'], null, 'term_id' );
-// Use the most specific places as unpublished-hub fallbacks, leaving editorial picks intact.
-$places += array_diff_key( $inventory_places, array_fill_keys( wp_list_pluck( $inventory_places, 'parent' ), true ) );
-$places = array_slice( $places, 0, 3 );
+$parks = array_filter( inventory_terms()['where'], static function ( \WP_Term $term ): bool {
+	return (bool) $term->parent;
+} );
+$parks = array_column( $parks, null, 'term_id' );
+$parks = array_replace( array_intersect_key( array_fill_keys( $place_picks, null ), $parks ), $parks );
 $experiences = ready_terms( EXPERIENCE, array(), array(), 4 );
 ?>
-<?php if ( $places ) : ?>
-	<section class="scs-shell scs-section scs-home-destinations">
-		<h2><?php esc_html_e( 'Explore African Safaris', 'scs-core' ); ?></h2>
-		<?php term_items( $places, 'where' ); ?>
-	</section>
-<?php endif; ?>
+<?php require __DIR__ . '/home-countries.php'; ?>
 <?php if ( $safaris ) : ?>
 	<section class="scs-shell scs-section scs-featured-safaris">
 		<div class="scs-section-head">
@@ -37,6 +32,12 @@ $experiences = ready_terms( EXPERIENCE, array(), array(), 4 );
 			<?php echo action_link( catalogue_url(), __( 'See all safaris', 'scs-core' ), 'scs-text-link' ); ?>
 		</div>
 		<?php cards( $safaris ); ?>
+	</section>
+<?php endif; ?>
+<?php if ( $parks ) : ?>
+	<section class="scs-shell scs-section scs-home-destinations">
+		<h2><?php esc_html_e( 'Parks and places to explore', 'scs-core' ); ?></h2>
+		<?php term_items( array_slice( $parks, 0, 3 ), 'where' ); ?>
 	</section>
 <?php endif; ?>
 <?php if ( $experiences ) : ?>

@@ -7,6 +7,11 @@ $term = get_queried_object();
 if ( ! $term instanceof \WP_Term || ! in_array( $term->taxonomy, array( DESTINATION, EXPERIENCE ), true ) ) {
 	return;
 }
+$guide = destination_guide( $term );
+if ( $guide ) {
+	require __DIR__ . '/destination-guide.php';
+	return;
+}
 $is_destination = DESTINATION === $term->taxonomy;
 $parent = $is_destination && $term->parent ? get_term( $term->parent, DESTINATION ) : null;
 $parent_url = $parent instanceof \WP_Term && hub_ready( $parent ) ? get_term_link( $parent ) : '';

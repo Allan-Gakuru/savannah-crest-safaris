@@ -13,7 +13,7 @@ Use HTML block templates in the standalone `savannah-crest` theme to compose pag
 | Template | Route | Section order |
 | --- | --- | --- |
 | `index.html` | Fallback when a specific template is unavailable | Shared header → current query results → shared footer |
-| `front-page.html` | `/` | Photo hero with Plan and Explore actions → destination and duration finder → safari team introduction and planning steps → destination cards → featured safaris → experiences → planning CTA |
+| `front-page.html` | `/` | Photo hero with Plan and Explore actions → destination and duration finder → safari team introduction and planning steps → luxury safari country guides, Kenya first → featured safaris → parks and places → experiences → planning CTA |
 | `archive-scs_safari.html` | `/safaris/` | Breadcrumbs and intro → filters → results and pagination → planner CTA/help |
 | `single-scs_safari.html` | `/safaris/{trip}/` | Breadcrumbs → trip hero → key facts and price → overview → route and days → stays → inclusions/exclusions → timing → related trips and enquiry |
 | `taxonomy-scs_destination.html` | `/destinations/{path}/` | Breadcrumbs → place hero and intro → matching trips → child places where relevant → when/where/how to visit → stays and guides → plan |
@@ -34,7 +34,7 @@ Use HTML block templates in the standalone `savannah-crest` theme to compose pag
 ## 3. Build the landing pages
 
 - **Home.** Pitch the local planning proposition in one sentence and show a clear path to trips. Only pin published picks. When a pick is unpublished, hide it and fill remaining spaces from eligible published items as available. Render the approved photographic and brand layout from [Theme and UI](theme-and-ui.md).
-- **Destinations.** Start with a country hub and the parks Savannah Crest actually covers. Parent links to children and children link back to the parent. Put matched trips early and answer season, duration and transfer questions below. Offer an experience cross-link where it helps discovery.
+- **Destinations.** The country cards link to the existing taxonomy routes. Keep the guide copy in `scs-core/content/destination-guides.php` and the matching responsive photos in the theme. Show one card per guide with published trips, with Kenya first. Country guides show matched trips, places, season guidance, planning tips and FAQs. Zanzibar has its own guide and appears in Tanzania’s matching trips while keeping its existing URL.
 - **Experiences.** Group family and honeymoon separately when the offer genuinely differs. Use a unique decision guide for each and explain relevant constraints. Link to curated trips and matching destinations.
 - **Guides.** Build practical evergreen articles such as timing, choosing a route, and how bespoke trips are quoted. A travel advisor reviews facts and the published reviewed date. Use links with meaningful labels to relevant hubs and itineraries.
 - **Stays.** Populate enough detail for a visitor to compare comfort, location and trade-offs. Render trips that use the stay from their itinerary association. For small launch inventory a capped candidate query and exact ID checks are acceptable. If the collection grows, index the derived association on save and reconcile it when a stay is unpublished.

@@ -55,9 +55,11 @@ function menu_panels( string $planner, string $enquiry, string $stories ): array
 
 	if ( $catalogue && function_exists( 'SavannahCrest\Core\browse_term_url' ) ) {
 		$inventory = Core\inventory_terms();
-		$countries = array_filter( $inventory['where'], static function ( \WP_Term $term ): bool { return ! $term->parent; } );
+		$countries = array_filter( $inventory['where'], static function ( \WP_Term $term ): bool {
+			return ! $term->parent && ! isset( Core\DESTINATION_REGIONS[ $term->slug ] );
+		} );
 		$places = array_diff_key( $inventory['where'], $countries );
-		$east = array_intersect_key( $countries, array_flip( array( 'kenya', 'tanzania', 'uganda', 'rwanda', 'zanzibar' ) ) );
+		$east = array_intersect_key( $countries, array_flip( array( 'kenya', 'tanzania', 'uganda', 'rwanda' ) ) );
 		$south = array_intersect_key( $countries, array_flip( array( 'botswana', 'namibia', 'south-africa', 'zambia', 'zimbabwe', 'malawi', 'mozambique' ) ) );
 		$elsewhere = array_diff_key( $countries, $east, $south );
 		$country_links = array();

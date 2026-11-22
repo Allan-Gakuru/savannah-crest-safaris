@@ -52,6 +52,9 @@ function get_term( $id, $taxonomy ) {
 	return 2 === $id ? new WP_Term( 2, 'Mara', 'mara', $taxonomy ) : null;
 }
 function get_term_by( $field, $slug, $taxonomy ) {
+	if ( 'scs_destination' === $taxonomy && isset( $GLOBALS['destination_test_terms'][ $slug ] ) ) {
+		return $GLOBALS['destination_test_terms'][ $slug ];
+	}
 	if ( 'mara' === $slug || 'unfinished' === $slug ) {
 		return new WP_Term( 'mara' === $slug ? 2 : 3, 'Destination', $slug, $taxonomy );
 	}
@@ -95,6 +98,18 @@ function delete_option( $key ) {
 function is_wp_error( $value ) {
 	return false;
 }
+function get_posts( $args ) {
+	return array( 8 );
+}
+function get_terms( $args ) {
+	return 'scs_destination' === $args['taxonomy'] ? $GLOBALS['destination_test_inventory'] : array();
+}
+function get_ancestors( $id, $taxonomy, $type ) {
+	return array();
+}
+function get_term_link( WP_Term $term ) {
+	return '/destinations/' . $term->slug . '/';
+}
 function wp_insert_post( $page, $report_errors ) {
 	$GLOBALS['enquiry_insert_attempts']++;
 	if ( ! empty( $GLOBALS['enquiry_insert_fails'] ) ) {
@@ -117,6 +132,7 @@ $plugin = dirname( __DIR__ ) . '/wp-content/plugins/scs-core/src/';
 require $plugin . 'content.php';
 require $plugin . 'safari.php';
 require $plugin . 'catalogue.php';
+require $plugin . 'destinations.php';
 require $plugin . 'planner.php';
 
 use function SavannahCrest\Core\context_from_query;
@@ -197,6 +213,23 @@ check( parse_filters( array( 'sort' => 'newest' ), $inventory )['values'], array
 check( filter_query_args( parse_filters( array( 'duration' => '8-plus' ), $inventory ), $inventory )['meta_query']['duration_days']['value'], 8, 'Long duration has a lower bound' );
 check( parse_filters( array( 'comfort' => 'luxury' ), $inventory )['invalid'], true, 'Disabled comfort input is rejected' );
 check( filter_query_args( parse_filters( array( 'where' => array( 'mara' ) ), $inventory ), $inventory )['post__in'], array( 0 ), 'Array filter cannot broaden the query' );
+
+$GLOBALS['destination_test_terms'] = array(
+	'botswana' => new WP_Term( 20, 'Botswana', 'botswana' ),
+	'kenya' => new WP_Term( 21, 'Kenya', 'kenya' ),
+	'tanzania' => new WP_Term( 22, 'Tanzania', 'tanzania' ),
+	'zanzibar' => new WP_Term( 23, 'Zanzibar', 'zanzibar' ),
+	'uganda' => new WP_Term( 24, 'Uganda', 'uganda' ),
+);
+$GLOBALS['destination_test_inventory'] = array_intersect_key( $GLOBALS['destination_test_terms'], array_flip( array( 'botswana', 'kenya', 'zanzibar' ) ) );
+$countries = SavannahCrest\Core\country_guides();
+check( array_keys( $countries ), array( 'kenya', 'tanzania', 'botswana' ), 'List stocked countries once, with Kenya first and Zanzibar included in Tanzania' );
+check( SavannahCrest\Core\hub_ready( $countries['kenya'] ), true, 'A stocked country with a versioned guide can be indexed and linked' );
+check( SavannahCrest\Core\hub_ready( $GLOBALS['destination_test_terms']['uganda'] ), false, 'A country guide without live inventory does not enable a hub' );
+check( SavannahCrest\Core\browse_term_url( $countries['kenya'], 'where', '/safaris/' ), '/destinations/kenya/', 'A country card links to its guide rather than the filtered catalogue' );
+check( SavannahCrest\Core\term_clause( $countries['tanzania'] )['terms'], array( 22, 23 ), 'Tanzania trips include the existing Zanzibar term' );
+check( SavannahCrest\Core\term_clause( $GLOBALS['destination_test_terms']['zanzibar'] )['terms'], array( 23 ), 'Zanzibar retains its own narrower trip query' );
+check( context_from_query( array( 'destination' => 'tanzania' ) )['id'], 22, 'A country guide starts an enquiry with destination context' );
 
 check( context_from_query( array( 'trip' => 'approved' ) )['id'], 8, 'Accept public itinerary context' );
 check( context_from_query( array( 'trip' => 'internal-draft' ) ), array(), 'Draft context is hidden' );

@@ -10,7 +10,9 @@ $terms = inventory_terms()[ $filter ];
 foreach ( ready_terms( $taxonomy ) as $term ) {
 	$terms[ $term->slug ] = $term;
 }
-$primary = $experience ? $terms : array_filter( $terms, static function ( \WP_Term $term ): bool { return ! $term->parent; } );
+$primary = $experience ? $terms : array_filter( $terms, static function ( \WP_Term $term ): bool {
+	return ! $term->parent && ! isset( DESTINATION_REGIONS[ $term->slug ] );
+} );
 $sections = $experience
 	? array( __( 'Find an experience', 'scs-core' ) => $primary )
 	: array( __( 'Browse by country', 'scs-core' ) => $primary, __( 'Parks and places', 'scs-core' ) => array_diff_key( $terms, $primary ) );

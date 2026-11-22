@@ -3,6 +3,42 @@ namespace SavannahCrest\Core;
 
 defined( 'ABSPATH' ) || exit;
 
+function queried_destination_guide(): array {
+	if ( ! is_tax( DESTINATION ) ) {
+		return array();
+	}
+	$term = get_queried_object();
+	return $term instanceof \WP_Term ? destination_guide( $term ) : array();
+}
+
+function destination_document_title( array $parts ): array {
+	$guide = queried_destination_guide();
+	if ( $guide ) {
+		$parts['title'] = $guide['title'];
+	}
+	return $parts;
+}
+
+function destination_meta_description( string $description ): string {
+	$guide = queried_destination_guide();
+	return '' === $description && $guide ? $guide['teaser'] : $description;
+}
+
+function destination_core_meta(): void {
+	if ( defined( 'WPSEO_VERSION' ) ) {
+		return;
+	}
+	$guide = queried_destination_guide();
+	if ( ! $guide ) {
+		return;
+	}
+	$canonical = get_term_link( get_queried_object() );
+	if ( ! is_wp_error( $canonical ) ) {
+		printf( "<link rel=\"canonical\" href=\"%s\">\n", esc_url( $canonical ) );
+	}
+	printf( "<meta name=\"description\" content=\"%s\">\n", esc_attr( $guide['teaser'] ) );
+}
+
 function noindex_route(): bool {
 	if ( is_page( array( PLANNER_SLUG, ENQUIRY_SLUG, 'thank-you' ) ) || is_search() || ( is_post_type_archive( SAFARI ) && has_catalogue_request() ) ) {
 		return true;
@@ -41,6 +77,7 @@ function term_sitemap( array $args, string $taxonomy ): array {
 		}
 	}
 	$args['exclude'] = array_unique( $excluded );
+	$args['hide_empty'] = false;
 	return $args;
 }
 

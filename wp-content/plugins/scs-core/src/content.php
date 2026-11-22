@@ -135,8 +135,9 @@ function term_field( string $name, \WP_Term $term ) {
 }
 
 function hub_ready( \WP_Term $term ): bool {
-	return (bool) get_term_meta( $term->term_id, 'scs_term_ready', true )
-		&& '' !== trim( wp_strip_all_tags( (string) get_term_meta( $term->term_id, 'scs_term_intro', true ) . $term->description . (string) get_term_meta( $term->term_id, 'scs_term_body', true ) ) );
+	return (bool) destination_guide( $term )
+		|| ( (bool) get_term_meta( $term->term_id, 'scs_term_ready', true )
+			&& '' !== trim( wp_strip_all_tags( (string) get_term_meta( $term->term_id, 'scs_term_intro', true ) . $term->description . (string) get_term_meta( $term->term_id, 'scs_term_body', true ) ) ) );
 }
 
 function term_label( $id, string $taxonomy = DESTINATION ): string {
