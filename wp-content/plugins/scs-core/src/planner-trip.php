@@ -4,6 +4,7 @@ namespace SavannahCrest\Core;
 defined( 'ABSPATH' ) || exit;
 
 const TRIP_PRIORITY_FIELD = 'radio-2';
+const TRIP_EXPERIENCE_FIELD = 'checkbox-1';
 const TRIP_DESTINATION_BREAK = 'page-break-5';
 const TRIP_DESTINATION_FIELDS = array( 'checkbox-2' => 'checkbox', 'text-2' => 'text' );
 const FORMINATOR_FORM_META = 'forminator_form_meta';
@@ -37,6 +38,25 @@ function safari_priority_choices( array $trip ): array {
 		$choices = array_slice( $choices, 0, 5 );
 	}
 	return array_merge( $choices, array( $help ) );
+}
+
+function safari_experience_choices( array $trip ): array {
+	$routes = require __DIR__ . '/../content/safari-experiences.php';
+	if ( isset( $routes[ $trip['slug'] ] ) ) {
+		return $routes[ $trip['slug'] ];
+	}
+	$experiences = wp_get_post_terms( (int) $trip['id'], EXPERIENCE, array( 'fields' => 'names' ) );
+	return ! is_wp_error( $experiences ) && $experiences
+		? $experiences
+		: array( __( 'I’d like suggestions for this itinerary', 'scs-core' ) );
+}
+
+function planner_choice_options( array $labels ): array {
+	// Keep selected answers readable in entries and notifications after the choices change.
+	return array_map( static function ( string $label ): array {
+		$escaped = esc_html( $label );
+		return array( 'label' => $escaped, 'value' => $escaped, 'default' => '', 'calculation' => 0 );
+	}, $labels );
 }
 
 function planner_form_trip( int $form_id ): array {
@@ -81,16 +101,19 @@ function tailor_planner_form( $value, int $form_id, string $key, bool $single ) 
 
 function trip_form_fields( array $fields, array $trip ): array {
 	$types = array_column( $fields, 'type', 'id' );
-	if ( count( $types ) !== count( $fields ) || 'radio' !== ( $types[ TRIP_PRIORITY_FIELD ] ?? '' ) ) {
+	if ( count( $types ) !== count( $fields ) ) {
 		return $fields;
 	}
 	$fields = array_values( $fields );
 	$field_ids = array_keys( $types );
-	$priority = array_search( TRIP_PRIORITY_FIELD, $field_ids, true );
-	// Keep the value readable in entries and notifications after the choices change.
-	$fields[ $priority ]['options'] = array_map( static function ( string $label ): array {
-		return array( 'label' => esc_html( $label ), 'value' => esc_html( $label ), 'default' => '', 'calculation' => 0 );
-	}, safari_priority_choices( $trip ) );
+	if ( 'radio' === ( $types[ TRIP_PRIORITY_FIELD ] ?? '' ) ) {
+		$priority = array_search( TRIP_PRIORITY_FIELD, $field_ids, true );
+		$fields[ $priority ]['options'] = planner_choice_options( safari_priority_choices( $trip ) );
+	}
+	if ( 'checkbox' === ( $types[ TRIP_EXPERIENCE_FIELD ] ?? '' ) ) {
+		$experience = array_search( TRIP_EXPERIENCE_FIELD, $field_ids, true );
+		$fields[ $experience ]['options'] = planner_choice_options( safari_experience_choices( $trip ) );
+	}
 
 	$page_start = array_search( TRIP_DESTINATION_BREAK, $field_ids, true );
 	if ( false === $page_start || 'page-break' !== $types[ TRIP_DESTINATION_BREAK ] ) {

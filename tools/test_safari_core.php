@@ -143,7 +143,7 @@ function maybe_unserialize( $value ) {
 	return is_string( $value ) ? unserialize( $value ) : $value;
 }
 function wp_get_post_terms( $id, $taxonomy, $args ) {
-	return $GLOBALS['planner_test_experiences'][ $id ] ?? array();
+	return $GLOBALS['planner_test_experiences'][ $id ][ $args['fields'] ] ?? array();
 }
 function esc_html( $value ) {
 	return htmlspecialchars( $value, ENT_QUOTES, 'UTF-8', false );
@@ -168,6 +168,7 @@ use function SavannahCrest\Core\parse_filters;
 use function SavannahCrest\Core\planner_entry_context;
 use function SavannahCrest\Core\price_label;
 use function SavannahCrest\Core\publication_errors;
+use function SavannahCrest\Core\safari_experience_choices;
 use function SavannahCrest\Core\safari_priority_choices;
 use function SavannahCrest\Core\tailor_planner_form;
 use function SavannahCrest\Core\valid_rate_date;
@@ -275,8 +276,9 @@ check( array_column( planner_entry_context( $entry, 77 ), 'value', 'name' )['hid
 function planner_test_form_meta( bool $extra_question = false ): array {
 	$schema = array(
 		'radio-1' => 'radio', 'page-break-1' => 'page-break', 'number-1' => 'number',
-		'page-break-2' => 'page-break', 'number-2' => 'number', 'page-break-4' => 'page-break',
-		'radio-2' => 'radio', 'page-break-5' => 'page-break', 'checkbox-2' => 'checkbox', 'text-2' => 'text',
+		'page-break-2' => 'page-break', 'number-2' => 'number', 'page-break-3' => 'page-break', 'radio-2' => 'radio',
+		'page-break-4' => 'page-break', 'checkbox-1' => 'checkbox',
+		'page-break-5' => 'page-break', 'checkbox-2' => 'checkbox', 'text-2' => 'text',
 	);
 	if ( $extra_question ) {
 		$schema['text-99'] = 'text';
@@ -288,6 +290,8 @@ function planner_test_form_meta( bool $extra_question = false ): array {
 	}
 	$fields['radio-2']['required'] = true;
 	$fields['radio-2']['options'] = array( array( 'label' => 'Wildlife', 'value' => 'wildlife' ) );
+	$fields['checkbox-1']['required'] = false;
+	$fields['checkbox-1']['options'] = array( array( 'label' => 'Walking safaris', 'value' => 'walking' ) );
 	$fields['page-break-1']['conditions'] = array( array( 'element_id' => 'radio-1', 'value' => 'solo' ) );
 	return array( 'fields' => array_values( $fields ), 'settings' => array( 'pagination' => 'show' ) );
 }
@@ -307,13 +311,16 @@ check( tailor_planner_form( null, 77, 'forminator_form_meta', true ), null, 'The
 
 $GLOBALS['planner_test_page'] = 'plan-your-safari';
 $tour = tailor_planner_form( null, 77, 'forminator_form_meta', true )[0];
-$priority = array_column( $tour['fields'], null, 'id' )['radio-2'];
+$tour_fields = array_column( $tour['fields'], null, 'id' );
+$priority = $tour_fields['radio-2'];
 $amboseli_choices = array_column( $priority['options'], 'value' );
 check( $amboseli_choices, array( 'More time watching elephants', 'Wildlife photography', 'A Maasai community visit', 'I’d like your advice' ), 'Tour links show the matching trip priorities' );
 check( $priority['required'], true, 'The tailored priority question stays required' );
+check( array_column( $tour_fields['checkbox-1']['options'], 'value' ), array( 'Game drives in Amboseli', 'Elephant watching', 'Photographing Kilimanjaro when skies are clear', 'Maasai village visit' ), 'The optional checklist offers specific activities from Amboseli' );
+check( $tour_fields['checkbox-1']['required'], false, 'The tailored experience question stays optional' );
 check(
 	array_column( $tour['fields'], 'id' ),
-	array( 'radio-1', 'page-break-1', 'number-1', 'page-break-2', 'number-2', 'page-break-4', 'radio-2', 'page-break-6', 'date-1', 'email-1' ),
+	array( 'radio-1', 'page-break-1', 'number-1', 'page-break-2', 'number-2', 'page-break-3', 'radio-2', 'page-break-4', 'checkbox-1', 'page-break-6', 'date-1', 'email-1' ),
 	'Remove exactly the destination page and its questions'
 );
 check( $tour['fields'][1], $general['fields'][1], 'The solo skip rule stays intact' );
@@ -324,12 +331,20 @@ check( tailor_planner_form( null, 88, 'forminator_form_meta', true ), null, 'Lea
 $GLOBALS['planner_test_page'] = '';
 $_POST = array( 'action' => 'forminator_submit_form_custom-forms', 'form_id' => '77', '_scs_planner_context' => 'trip:' . $rwanda );
 $submitted = tailor_planner_form( null, 77, 'forminator_form_meta', true )[0];
-$rwanda_choices = array_column( array_column( $submitted['fields'], null, 'id' )['radio-2']['options'], 'value' );
+$submitted_fields = array_column( $submitted['fields'], null, 'id' );
+$rwanda_choices = array_column( $submitted_fields['radio-2']['options'], 'value' );
+$rwanda_experiences = array_column( $submitted_fields['checkbox-1']['options'], 'value' );
 check( in_array( 'Golden monkey trekking', $rwanda_choices, true ), true, 'AJAX validation gets the options for the submitted itinerary' );
 check( array_intersect( $amboseli_choices, $rwanda_choices ), array( 3 => 'I’d like your advice' ), 'Different itineraries offer different choices' );
-$entry = array( array( 'name' => 'radio-2', 'value' => $rwanda_choices[1] ) );
+check( $rwanda_experiences, array( 'Mountain gorilla trekking', 'Golden monkey trekking', 'Visiting the Kigali Genocide Memorial' ), 'AJAX validation gets Rwanda’s experience choices' );
+$selected_experiences = array_slice( $rwanda_experiences, 0, 2 );
+$entry = array(
+	array( 'name' => 'radio-2', 'value' => $rwanda_choices[1] ),
+	array( 'name' => 'checkbox-1', 'value' => $selected_experiences ),
+);
 $saved = array_column( planner_entry_context( $entry, 77 ), 'value', 'name' );
 check( $saved['radio-2'], 'Golden monkey trekking', 'The saved entry retains the selected text' );
+check( $saved['checkbox-1'], $selected_experiences, 'The saved entry retains both selected experiences' );
 check( $saved['hidden-3'], 'Rwanda Gorilla and Golden Monkey Trekking Safari', 'The form saves the authoritative tour title' );
 
 $changed = planner_test_form_meta( true );
@@ -347,8 +362,11 @@ $_GET = array();
 $trip_data = context_from_query( array( 'trip' => $amboseli ) );
 $GLOBALS['planner_test_fields'][91]['scs_enquiry_priorities'] = "A private &lt;b&gt;photography&lt;/b&gt; drive\r\n\r\nA private photography drive\nBush breakfast\nI’d like your advice";
 check( safari_priority_choices( $trip_data ), array( 'A private photography drive', 'Bush breakfast', 'I’d like your advice' ), 'The editor can replace the suggestions with distinct plain text choices' );
-$GLOBALS['planner_test_experiences'][8] = array( 'walking-cycling' );
-check( safari_priority_choices( context_from_query( array( 'trip' => 'approved' ) ) )[0], 'More time walking or cycling', 'New itineraries get choices based on their experiences' );
+$new_trip = context_from_query( array( 'trip' => 'approved' ) );
+check( safari_experience_choices( $new_trip ), array( 'I’d like suggestions for this itinerary' ), 'An itinerary without tags still offers a relevant option' );
+$GLOBALS['planner_test_experiences'][8] = array( 'slugs' => array( 'walking-cycling' ), 'names' => array( 'Walking and cycling' ) );
+check( safari_experience_choices( $new_trip ), array( 'Walking and cycling' ), 'New itineraries use their assigned experiences' );
+check( safari_priority_choices( $new_trip )[0], 'More time walking or cycling', 'New itineraries get priorities based on their experiences' );
 
 $GLOBALS['enquiry_insert_attempts'] = 0;
 ensure_enquiry_page();
