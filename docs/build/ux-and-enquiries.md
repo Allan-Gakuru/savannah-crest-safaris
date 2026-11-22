@@ -28,6 +28,7 @@ Use **Explore safaris** for browsing and **Plan your safari** for the main lead 
 3. In the planner notification, include the three context fields and the submission reference using Forminator's merge fields. Configure the approved recipient, authenticated From address, Reply-To and visitor acknowledgement. Use private WP Admin submissions to confirm the authoritative stored values.
 4. Exclude **/plan-your-safari/**, including contextual variants, and **/enquire/** in cPanel, caching plugins, and any CDN. The plugin also sends no-cache headers. Test the form from two different published itineraries after deployment.
 5. The header **Enquire** button opens `/enquire/`, which offers an introduction and then the same configured Forminator form with general enquiry context. The distinct **Plan your safari** hero button continues to open `/plan-your-safari/`. After deployment, open WP Admin as an administrator to provision the Enquire Page if it does not already exist.
+6. On both pages, a single-choice question advances automatically after an answer is selected, using Forminator's own Next control and validation. Questions with multiple selections or other visible inputs retain the Next control; the Back control retains prior answers. Never automatically submit the final step.
 
 ## Conversion measurement and operations
 

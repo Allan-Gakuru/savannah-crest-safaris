@@ -48,6 +48,9 @@ add_filter( 'wpseo_canonical', static function ( $canonical ) {
 add_action( 'wp_enqueue_scripts', static function (): void {
 	$dependencies = is_page( array( PLANNER_SLUG, ENQUIRY_SLUG ) ) ? array( 'jquery' ) : array();
 	wp_enqueue_script( 'scs-events', plugins_url( 'assets/events.js', FILE ), $dependencies, VERSION, true );
+	if ( is_page( array( PLANNER_SLUG, ENQUIRY_SLUG ) ) ) {
+		wp_enqueue_script( 'scs-form-flow', plugins_url( 'assets/form-flow.js', FILE ), array(), VERSION, true );
+	}
 	if ( is_page( ENQUIRY_SLUG ) ) {
 		wp_enqueue_script( 'scs-enquiry', plugins_url( 'assets/enquiry.js', FILE ), array(), VERSION, true );
 	}
