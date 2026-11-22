@@ -7,6 +7,13 @@
   "icon": "location-alt",
   "description": "Find a safari and browse published itineraries and destinations.",
   "textdomain": "scs-core",
+  "attributes": {
+    "section": {
+      "type": "string",
+      "enum": ["all", "finder", "browse"],
+      "default": "all"
+    }
+  },
   "usesContext": [
     "postId",
     "postType"

@@ -1,7 +1,7 @@
 /*
 Theme Name: Savannah Crest
 Description: WordPress block theme for Savannah Crest Safaris.
-Version: 0.3.3
+Version: 0.3.4
 Requires at least: 6.4
 Requires PHP: 7.4
 Text Domain: savannah-crest
@@ -127,6 +127,54 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
 	.scs-home-actions .scs-button { transition: transform 180ms ease-out; }
 	.scs-home-actions .scs-button:hover { transform: scale(1.04); }
+}
+.scs-home-experts {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: clamp(1.5rem, 5vw, 4.5rem);
+	align-items: center;
+	background: var(--scs-sand);
+	padding: clamp(1.4rem, 4.7vw, 4rem);
+	box-sizing: border-box;
+	margin-block: clamp(1.75rem, 4vw, 3.5rem) 0;
+}
+.scs-home-experts h2 { max-width: 19ch; text-wrap: balance; }
+.scs-home-experts p { max-width: 55ch; margin-block: 1rem 0; line-height: 1.7; }
+.scs-home-experts .scs-founder-image { width: 100%; margin: 0; }
+.scs-home-experts .scs-founder-image img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: center top; }
+.scs-home-experts__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: .45rem 1.3rem;
+	margin-block-start: 1.4rem;
+}
+.scs-home-experts__actions:empty { display: none; }
+.scs-home-experts__actions > * { margin-block: 0; }
+.scs-home-experts__actions .scs-text-link { display: inline-flex; align-items: center; min-height: 44px; }
+.scs-home-experts .scs-text-link, .scs-home-process .scs-text-link { color: var(--scs-espresso); }
+.scs-home-experts .scs-text-link:hover, .scs-home-process .scs-text-link:hover { color: var(--scs-muted); }
+.scs-home-process { padding-block: clamp(2.1rem, 5vw, 4.25rem); }
+.scs-home-process__steps {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 1.25rem;
+	margin-block: clamp(1.1rem, 3vw, 2rem) 0;
+	padding: 0;
+	list-style: none;
+}
+.scs-home-process__steps li {
+	border-block-start: 1px solid var(--scs-line);
+	margin: 0;
+	padding-block-start: .85rem;
+}
+.scs-home-process__number { display: block; color: var(--scs-espresso); font-size: 1.65rem; font-weight: 600; line-height: 1; margin-block-end: .85rem; }
+.scs-home-process__steps h3 { font-size: clamp(1.18rem, 2.4vw, 1.45rem); }
+.scs-home-process__steps p { max-width: 37ch; margin-block: .55rem 0; line-height: 1.6; }
+.scs-home-process__steps a { display: inline-flex; align-items: center; min-height: 44px; margin-block-start: .25rem; }
+@media (min-width: 760px) {
+	.scs-home-experts:has(.scs-founder-image) { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+	.scs-home-process__steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.35rem, 4vw, 3.25rem); }
 }
 .scs-section-head { display: flex; justify-content: space-between; align-items: baseline; gap: .75rem 2rem; flex-wrap: wrap; }
 .scs-section-head h2 { margin-block: 0 .42em; }

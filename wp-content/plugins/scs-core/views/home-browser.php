@@ -3,6 +3,17 @@ namespace SavannahCrest\Core;
 
 defined( 'ABSPATH' ) || exit;
 
+$section = $attributes['section'] ?? 'all';
+if ( 'browse' !== $section ) : ?>
+	<section class="scs-shell scs-finder" aria-label="<?php esc_attr_e( 'Find your safari', 'scs-core' ); ?>">
+		<?php filter_form( array(), true ); ?>
+	</section>
+<?php endif;
+
+if ( 'finder' === $section ) {
+	return;
+}
+
 $front = (int) get_option( 'page_on_front' );
 $safaris = matching_safaris( array(), $front ? ids( field( 'scs_home_featured_trips', $front ) ) : array(), 3 );
 $place_picks = $front ? ids( field( 'scs_home_featured_places', $front ) ) : array();
@@ -13,9 +24,6 @@ $places += array_diff_key( $inventory_places, array_fill_keys( wp_list_pluck( $i
 $places = array_slice( $places, 0, 3 );
 $experiences = ready_terms( EXPERIENCE, array(), array(), 4 );
 ?>
-<section class="scs-shell scs-finder" aria-label="<?php esc_attr_e( 'Find your safari', 'scs-core' ); ?>">
-	<?php filter_form( array(), true ); ?>
-</section>
 <?php if ( $places ) : ?>
 	<section class="scs-shell scs-section scs-home-destinations">
 		<h2><?php esc_html_e( 'Explore African Safaris', 'scs-core' ); ?></h2>

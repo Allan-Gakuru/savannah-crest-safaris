@@ -13,7 +13,7 @@ Use HTML block templates in the standalone `savannah-crest` theme to compose pag
 | Template | Route | Section order |
 | --- | --- | --- |
 | `index.html` | Fallback when a specific template is unavailable | Shared header → current query results → shared footer |
-| `front-page.html` | `/` | Photo hero with Plan and Explore actions → destination and duration finder → destination cards → featured safaris → experiences → planning CTA |
+| `front-page.html` | `/` | Photo hero with Plan and Explore actions → destination and duration finder → safari team introduction and planning steps → destination cards → featured safaris → experiences → planning CTA |
 | `archive-scs_safari.html` | `/safaris/` | Breadcrumbs and intro → filters → results and pagination → planner CTA/help |
 | `single-scs_safari.html` | `/safaris/{trip}/` | Breadcrumbs → trip hero → key facts and price → overview → route and days → stays → inclusions/exclusions → timing → related trips and enquiry |
 | `taxonomy-scs_destination.html` | `/destinations/{path}/` | Breadcrumbs → place hero and intro → matching trips → child places where relevant → when/where/how to visit → stays and guides → plan |
