@@ -140,15 +140,10 @@ function term_items( array $terms, string $catalogue_filter = '' ): void {
 		return;
 	}
 	$catalogue = $catalogue_filter ? catalogue_url() : '';
-	$inventory = $catalogue ? ( inventory_terms()[ $catalogue_filter ] ?? array() ) : array();
 	echo '<ul class="scs-term-grid" role="list">';
 	foreach ( $terms as $term ) {
-		$hub = hub_ready( $term );
-		$url = $hub ? get_term_link( $term ) : '';
-		if ( ! $hub && isset( $inventory[ $term->slug ] ) ) {
-			$url = add_query_arg( $catalogue_filter, $term->slug, $catalogue );
-		}
-		if ( ! $url || is_wp_error( $url ) ) {
+		$url = browse_term_url( $term, $catalogue_filter, $catalogue );
+		if ( ! $url ) {
 			continue;
 		}
 		$attributes = array( 'loading' => 'lazy', 'decoding' => 'async', 'alt' => '' );

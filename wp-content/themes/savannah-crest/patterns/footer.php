@@ -7,6 +7,9 @@
 use function SavannahCrest\Theme\links;
 use function SavannahCrest\Theme\page_link;
 use function SavannahCrest\Theme\site_mark;
+use const SavannahCrest\Theme\CONTACT_EMAIL;
+use const SavannahCrest\Theme\CONTACT_PHONE;
+use const SavannahCrest\Theme\CONTACT_PHONE_URL;
 
 defined( 'ABSPATH' ) || exit;
 $policies = array_filter( array(
@@ -18,7 +21,13 @@ $policies = array_filter( array(
 <div class="wp-block-group scs-site-footer">
 	<!-- wp:html -->
 	<div class="scs-shell scs-footer-inner">
-		<div class="scs-footer-brand"><?php site_mark( true ); ?></div>
+		<div class="scs-footer-brand">
+			<?php site_mark( true ); ?>
+			<ul role="list">
+				<li><a href="<?php echo esc_url( CONTACT_PHONE_URL ); ?>"><?php echo esc_html( CONTACT_PHONE ); ?></a></li>
+				<li><a href="<?php echo esc_url( 'mailto:' . CONTACT_EMAIL ); ?>"><?php echo esc_html( CONTACT_EMAIL ); ?></a></li>
+			</ul>
+		</div>
 		<?php if ( links() ) : ?>
 			<nav aria-label="<?php esc_attr_e( 'Explore', 'savannah-crest' ); ?>">
 				<ul role="list"><?php foreach ( links() as $name => $url ) : ?>

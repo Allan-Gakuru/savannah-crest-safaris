@@ -53,9 +53,11 @@ acknowledgement before opening the planner to visitors. Exclude the planner from
 server and CDN full-page caching, along with `/enquire/`.
 
 After deploying, open WP Admin once as an administrator. The core plugin creates
-the **Enquire** page if its slug is available. The header links there and the
-homepage actions link separately to the catalogue and trip planner. Both enquiry
-pages use the form configured under **Settings → Safari Planner**.
+the **Enquire**, **About Us**, **Traveller Stories**, **Destinations** and
+**Experiences** pages if their slugs are available. Edit their copy under **Pages**.
+The header links to Enquire while the homepage actions link separately to the
+catalogue and trip planner. Both enquiry pages use the form configured under
+**Settings → Safari Planner**.
 
 Check the homepage, catalogue filters and clean reset, destination page, itinerary
 accordion, and planner on the hosted site. From an approved itinerary, send a

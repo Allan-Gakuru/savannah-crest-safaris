@@ -28,6 +28,10 @@ def validate_blocks_and_markup():
         require(block['editorScript'] == 'scs-block-editor', f'Missing editor script for {expected}')
         registered[expected] = block
 
+    header = read_json(THEME / 'blocks/site-header/block.json')
+    require(header['name'] == 'savannah-crest/site-header', 'Unexpected header block name')
+    registered[header['name']] = header
+
     parts = {path.stem for path in (THEME / 'parts').glob('*.html')}
     templates = {path.stem for path in (THEME / 'templates').glob('*.html')}
     patterns = {
@@ -38,10 +42,12 @@ def validate_blocks_and_markup():
     required = {
         'index', 'front-page', 'archive-scs_safari', 'single-scs_safari', 'taxonomy-scs_destination',
         'taxonomy-scs_experience', 'single-scs_stay', 'home', 'single', 'page-plan-your-safari', '404',
+        'page-about', 'page-traveller-stories', 'page-destinations', 'page-experiences',
     }
     require(required <= templates, f'Missing templates: {required - templates}')
     require((THEME / 'style.css').is_file(), 'Missing theme stylesheet')
-    sources = [*(THEME / 'templates').glob('*.html'), *(THEME / 'parts').glob('*.html'), *(THEME / 'patterns').glob('*.php')]
+    sources = [*(THEME / 'templates').glob('*.html'), *(THEME / 'parts').glob('*.html'),
+               *(THEME / 'patterns').glob('*.php'), *(PLUGIN / 'pages').glob('*.html')]
     used = set()
     for source in sources:
         stack = []
@@ -53,7 +59,7 @@ def validate_blocks_and_markup():
                 require(stack and stack.pop() == name, f'Unexpected closing block {name} in {source.name}')
             elif not single:
                 stack.append(name)
-            if name.startswith('scs/'):
+            if name.startswith(('scs/', 'savannah-crest/')):
                 require(name in registered, f'Unknown dynamic block {name} in {source.name}')
                 require(single, f'Dynamic block {name} should be self-closing in {source.name}')
                 used.add(name)
@@ -114,6 +120,9 @@ def validate_assets():
             matches = asset.read_bytes() == source.read_bytes()
         require(matches, f'Unapproved asset copy: {asset}')
     require(not (ROOT / 'wp-config.php').exists() and not (ROOT / 'wp-content/uploads').exists(), 'WordPress runtime data in the repository')
+    for name in ('menu-plains', 'menu-wildlife', 'menu-field-notes', 'sam-founder'):
+        file = THEME / 'assets/images' / f'{name}.webp'
+        require(file.is_file() and file.read_bytes()[8:12] == b'WEBP', f'Invalid WebP file: {file}')
     print(f'Validated {len(list(brand.iterdir()))} brand assets and the configured fonts and licenses.')
 
 

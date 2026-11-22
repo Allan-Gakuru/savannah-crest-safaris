@@ -1,5 +1,11 @@
 # Templates and publishing
 
+## Company and browse Pages
+
+The first administrator visit to WP Admin after deployment provisions About Us, Traveller Stories, Destinations and Experiences when those slugs are available. The initial native block content lives in `scs-core/pages/`. Editors maintain published copy under **Pages** in WordPress. The provisioning routine leaves existing Pages in place and runs once for each slug. Keep the About section anchors `meet-sam`, `our-standards`, `how-it-works` and `safari-faqs` in sync with the header and page jump links. The Stories page launches with Savannah Crest field notes. Add attributed guest accounts once the travellers have approved publication.
+
+Destinations and Experiences include ready hubs and terms currently used by public safaris. Visitors can follow an available term straight to the catalogue while its editorial hub is in preparation.
+
 ## 1. Build the templates in order
 
 Use HTML block templates in the standalone `savannah-crest` theme to compose pages, and native patterns for editable narrative sections. After creating the shared header, footer, and fallback, build one complete destination → itinerary → enquiry path before expanding the other routes. Register structured-data-facing blocks in `scs-core` with `block.json` and PHP render functions. Use `postId` context on singles and the queried object for term templates. Use the main query in the archive block. Do not issue a second Query Loop for the same archive results. Give editor previews illustrative placeholders without inventing production content, and keep internal block options small. [Dynamic blocks](https://developer.wordpress.org/block-editor/getting-started/fundamentals/static-dynamic-rendering/) · [WordPress template hierarchy](https://developer.wordpress.org/themes/templates/template-hierarchy/).

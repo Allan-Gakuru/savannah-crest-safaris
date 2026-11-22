@@ -9,7 +9,7 @@ Register on `init` in `scs-core`. Set `show_in_rest` for the block editor. Add t
 | Custom post type | `scs_safari` | `/safaris/` and `/safaris/{trip}/` | Searchable itinerary. Set `has_archive` to `safaris` and rewrite slug to `safaris`, with front prefix disabled. Do not create a competing Page at the archive slug. |
 | Custom post type | `scs_stay` | `/stays/{stay}/` | Reusable approved camp and lodge records. Register the single route. Defer the public directory until it has a useful collection. Draft records and unconfirmed stays are hidden from public queries. |
 | Built-in post | `post` | `/guides/{article}/` | Planning guidance. Set global Post permalinks to `/guides/%postname%/`, with front prefix disabled on custom rewrites. Use a static Guides posts page at `/guides/`. |
-| Built-in page | `page` | `/`, `/destinations/`, `/experiences/`, `/about/`, `/plan-your-safari/`, `/privacy/`, `/booking-terms/` | Editorial entry pages, business information and form. The home page and posts page are selected under **Settings → Reading**. |
+| Built-in page | `page` | `/`, `/destinations/`, `/experiences/`, `/about/`, `/traveller-stories/`, `/plan-your-safari/`, `/privacy/`, `/booking-terms/` | Editorial entry pages, business information and form. The home page and posts page are selected under **Settings → Reading**. |
 
 Register public singles for stays from the outset, but only publish complete stay records. Build a team roster and approved quotes with editorial blocks initially. Introduce expert or review post types later if those entities need their own pages and relationships.
 

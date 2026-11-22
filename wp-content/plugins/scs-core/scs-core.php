@@ -20,6 +20,7 @@ require_once DIR . '/src/content.php';
 require_once DIR . '/src/safari.php';
 require_once DIR . '/src/catalogue.php';
 require_once DIR . '/src/planner.php';
+require_once DIR . '/src/editorial.php';
 require_once DIR . '/src/seo.php';
 require_once DIR . '/src/blocks.php';
 
@@ -29,6 +30,7 @@ add_action( 'init', __NAMESPACE__ . '\maybe_refresh_rewrites', 99 );
 add_action( 'admin_notices', __NAMESPACE__ . '\dependency_notice' );
 add_action( 'admin_init', __NAMESPACE__ . '\register_planner_settings' );
 add_action( 'admin_init', __NAMESPACE__ . '\ensure_enquiry_page' );
+add_action( 'admin_init', __NAMESPACE__ . '\ensure_editorial_pages' );
 add_filter( 'acf/settings/load_json', __NAMESPACE__ . '\field_group_paths' );
 add_filter( 'rest_pre_insert_scs_safari', __NAMESPACE__ . '\validate_rest_safari', 10, 2 );
 add_filter( 'wp_insert_post_empty_content', __NAMESPACE__ . '\guard_safari_write', 10, 2 );

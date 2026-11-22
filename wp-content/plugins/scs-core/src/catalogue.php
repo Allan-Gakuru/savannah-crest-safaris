@@ -48,6 +48,17 @@ function inventory_terms(): array {
 	return $inventory;
 }
 
+function browse_term_url( \WP_Term $term, string $filter, string $catalogue ): string {
+	if ( hub_ready( $term ) ) {
+		$url = get_term_link( $term );
+		if ( ! is_wp_error( $url ) ) {
+			return $url;
+		}
+	}
+	return $catalogue && isset( inventory_terms()[ $filter ][ $term->slug ] )
+		? add_query_arg( $filter, $term->slug, $catalogue ) : '';
+}
+
 function parse_filters( array $query, array $inventory ): array {
 	$allowed = array(
 		'where'      => array_keys( $inventory['where'] ),

@@ -6,7 +6,9 @@ namespace SavannahCrest\Theme;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION = '0.2.3';
+const VERSION = '0.3.0';
+
+require_once __DIR__ . '/inc/navigation.php';
 
 add_action( 'after_setup_theme', static function (): void {
 	add_theme_support( 'wp-block-styles' );
@@ -17,6 +19,7 @@ add_action( 'after_setup_theme', static function (): void {
 
 add_action( 'wp_enqueue_scripts', static function (): void {
 	wp_enqueue_style( 'savannah-crest', get_stylesheet_uri(), array(), VERSION );
+	wp_enqueue_style( 'savannah-crest-navigation', get_theme_file_uri( 'assets/navigation.css' ), array( 'savannah-crest' ), VERSION );
 } );
 
 add_action( 'wp_head', static function (): void {
@@ -29,8 +32,9 @@ add_action( 'wp_head', static function (): void {
 }, 9 );
 
 function page_link( string $slug ): string {
-	$page = get_page_by_path( $slug );
-	return $page instanceof \WP_Post && 'publish' === $page->post_status ? (string) get_permalink( $page ) : '';
+	$page = get_page_by_path( $slug, OBJECT, array( 'page' ) );
+	return $page instanceof \WP_Post && 'publish' === $page->post_status && '' === $page->post_password
+		? (string) get_permalink( $page ) : '';
 }
 
 function site_mark( bool $reverse = false ): void {
@@ -53,11 +57,7 @@ function links(): array {
 		__( 'Destinations', 'savannah-crest' ) => page_link( 'destinations' ) ?: ( $catalogue ? $catalogue . '#safari-filter-where' : '' ),
 		__( 'Experiences', 'savannah-crest' )  => page_link( 'experiences' ) ?: ( $catalogue ? $catalogue . '#safari-filter-experience' : '' ),
 		__( 'Travel Guide', 'savannah-crest' ) => page_link( 'guides' ),
-		__( 'About', 'savannah-crest' )        => page_link( 'about' ),
+		__( 'About us', 'savannah-crest' )     => page_link( 'about' ),
+		__( 'Traveller stories', 'savannah-crest' ) => page_link( 'traveller-stories' ),
 	) );
-}
-
-function nav_link_block( string $label, string $url ): void {
-	$attributes = wp_json_encode( array( 'label' => $label, 'url' => $url, 'kind' => 'custom' ), JSON_HEX_TAG | JSON_HEX_AMP );
-	echo '<!-- wp:navigation-link ' . $attributes . ' /-->';
 }

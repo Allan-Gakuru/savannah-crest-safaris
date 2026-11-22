@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "savannah-crest/site-header",
+  "title": "Savannah Crest site header",
+  "category": "theme",
+  "icon": "menu",
+  "textdomain": "savannah-crest",
+  "supports": {
+    "html": false,
+    "multiple": false
+  },
+  "editorScript": "scs-navigation-editor",
+  "viewScript": "scs-navigation"
+}
