@@ -18,7 +18,7 @@ $experiences = ready_terms( EXPERIENCE, array(), array(), 4 );
 </section>
 <?php if ( $places ) : ?>
 	<section class="scs-shell scs-section scs-home-destinations">
-		<h2><?php esc_html_e( 'Explore Kenya', 'scs-core' ); ?></h2>
+		<h2><?php esc_html_e( 'Explore African Safaris', 'scs-core' ); ?></h2>
 		<?php term_items( $places, 'where' ); ?>
 	</section>
 <?php endif; ?>

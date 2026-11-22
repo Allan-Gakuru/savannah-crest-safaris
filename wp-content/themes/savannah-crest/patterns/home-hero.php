@@ -28,10 +28,10 @@ $photo = $front_page ? get_the_post_thumbnail( $front_page, 'full', array(
 	<!-- wp:group {"className":"scs-home-hero-copy scs-shell","layout":{"type":"default"}} -->
 	<div class="wp-block-group scs-home-hero-copy scs-shell">
 		<!-- wp:heading {"level":1} -->
-		<h1 class="wp-block-heading"><?php esc_html_e( 'Kenya, at your own pace', 'savannah-crest' ); ?></h1>
+		<h1 class="wp-block-heading"><?php esc_html_e( 'African Safaris, at your own pace', 'savannah-crest' ); ?></h1>
 		<!-- /wp:heading -->
 		<!-- wp:paragraph -->
-		<p><?php esc_html_e( 'Explore Kenya safari itineraries, then plan a route around how you want to travel.', 'savannah-crest' ); ?></p>
+		<p><?php esc_html_e( 'Explore African safari itineraries, then plan a route around how you want to travel.', 'savannah-crest' ); ?></p>
 		<!-- /wp:paragraph -->
 		<!-- wp:group {"className":"scs-home-actions","layout":{"type":"default"}} -->
 		<div class="wp-block-group scs-home-actions">
