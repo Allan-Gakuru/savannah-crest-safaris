@@ -10,7 +10,7 @@
 
 Use **Explore safaris** for browsing and **Plan your safari** for the main lead action. On a safari page use **Enquire about this safari** with the trip name echoed on the form. Explain that the itinerary is a starting point and pricing is indicative where applicable. Show verified expertise, real trip inclusions, and a response window approved by the operations owner.
 
-## Build one form with two steps
+## Build one form with two parts
 
 1. Choose one form plugin with stored entries, multipage support, notifications, and query prepopulation. The default candidate is **Forminator**. Confirm the installed version's behavior in hosted WP Admin after deployment and version the sanitized configuration. Use a native Page at `/plan-your-safari/`. Embed the form with a supported block or shortcode. [Forminator documentation](https://wpmudev.com/docs/changelog/forminator/).
 2. **Step 1 – Your safari.** Show the known trip or origin context. Ask for a travel window with a flexible/unsure option and party size. Adults must be at least one; children can be zero. Let guests select a place or “Help me choose.” Keep budget range, interests and length preferences optional and distinguish per-person from group budgets if displayed.
@@ -23,12 +23,14 @@ Use **Explore safaris** for browsing and **Plan your safari** for the main lead 
 
 ## Hosted Forminator configuration
 
-1. In Forminator, publish a two-step form using the fields and rules above. Enable stored submissions, AJAX submission, the inline confirmation, and the approved spam protection. Use normal page rendering for this form so the verified trip context is present when it renders.
+1. In Forminator, publish one form with a page per question and show dependent follow-ups on the same page as their controlling question. Enable stored submissions, AJAX submission, the inline confirmation, and the approved spam protection. Use normal page rendering for this form so the verified trip context is present when it renders.
 2. Add three distinct Hidden fields for context type, context ID, and context title. Use blank custom defaults. Copy their field IDs and the published form ID to **Settings → Safari Planner**. The planner template embeds the configured form, so the editorial Page only needs its title and any introductory copy.
 3. In the planner notification, include the three context fields and the submission reference using Forminator's merge fields. Configure the approved recipient, authenticated From address, Reply-To and visitor acknowledgement. Use private WP Admin submissions to confirm the authoritative stored values.
 4. Exclude **/plan-your-safari/**, including contextual variants, and **/enquire/** in cPanel, caching plugins, and any CDN. The plugin also sends no-cache headers. Test the form from two different published itineraries after deployment.
 5. The header **Enquire** button opens `/enquire/`, which offers an introduction and then the same configured Forminator form with general enquiry context. The distinct **Plan your safari** hero button continues to open `/plan-your-safari/`. After deployment, open WP Admin as an administrator to provision the Enquire Page if it does not already exist.
 6. On both pages, a single-choice question advances automatically after an answer is selected, using Forminator's own Next control and validation. Questions with multiple selections or other visible inputs retain the Next control; the Back control retains prior answers. Never automatically submit the final step.
+7. In the live Savannah Crest Safari Enquiry form, set the Adults and Children page breaks (`page-break-1` and `page-break-2`) to **Hide** when Travel party (`radio-1`) is **Just me** (`solo`). Forminator skips those pages in both directions and excludes their fields from validation and submission. Interpret **Just me** as one adult and zero children even when the counts are blank. Other party choices show the two counts. Children's ages only appear when the child count is above zero.
+8. The other-destination field (`text-2`) is required when it is shown. Show it only when the destination checklist includes **Somewhere else**. **Help me choose** is the option for travellers who have no specific destination in mind.
 
 ## Conversion measurement and operations
 
