@@ -6,7 +6,7 @@ namespace SavannahCrest\Theme;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION = '0.3.1';
+const VERSION = '0.3.2';
 
 require_once __DIR__ . '/inc/navigation.php';
 

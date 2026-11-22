@@ -1,7 +1,7 @@
 /*
 Theme Name: Savannah Crest
 Description: WordPress block theme for Savannah Crest Safaris.
-Version: 0.3.1
+Version: 0.3.2
 Requires at least: 6.4
 Requires PHP: 7.4
 Text Domain: savannah-crest
@@ -113,14 +113,14 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 	padding-block: clamp(1.25rem, 4.7vw, 4.6rem);
 	margin-block: 0 !important;
 }
-.scs-home-hero h1 { max-width: 13ch; font-size: clamp(3rem, 7vw, 6.35rem); text-wrap: balance; }
+.scs-home-hero h1 { max-width: 13ch; color: rgb(255 252 246 / 88%); font-size: clamp(3rem, 7vw, 6.35rem); text-wrap: balance; }
 .scs-home-hero-copy p { max-width: 36ch; font-size: clamp(1rem, 1.9vw, 1.16rem); }
 .scs-home-image, .scs-itinerary-hero__image { position: absolute; z-index: -2; inset: 0; margin: 0 !important; }
 .scs-home-image img, .scs-itinerary-hero__image img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .scs-home-image img { object-position: 62% 52%; }
 .scs-home-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-block-start: 1.2rem; }
 .scs-home-actions .scs-button { background: var(--scs-cream); border-color: var(--scs-cream); color: var(--scs-espresso); }
-.scs-home-actions .scs-button:hover { background: var(--scs-sand); border-color: var(--scs-sand); }
+.scs-home-actions .scs-button:not(.scs-button--outline):hover { background: var(--scs-espresso); border-color: var(--scs-espresso); color: var(--scs-cream); }
 .scs-home-actions .scs-button--outline { background: transparent; color: var(--scs-paper); }
 .scs-home-actions .scs-button--outline:hover { background: var(--scs-cream); color: var(--scs-espresso); }
 .scs-home-actions .scs-button:focus-visible { outline-color: var(--scs-paper); }
