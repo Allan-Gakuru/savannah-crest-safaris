@@ -29,7 +29,7 @@
 - **Quote or proof block.** Use real names or authorized attribution and link to the source where possible. Display factual team proof if guest reviews are still unavailable.
 - **Itinerary jump bar and accordion.** Jump links use real fragment URLs and account for sticky header height. Use native `details` / `summary` for day rows and FAQs when suitable. Keep the body and accessible names in the HTML.
 - **Sticky planning CTA.** Use one contextual CTA on mobile itinerary pages. Reserve room for it, handle bottom safe area insets and the on-screen keyboard, and suppress it on the form and wherever it would cover controls.
-- **Footer.** Include real contact details, destination and guide links, and policy links. Add verified credentials only when supplied by the business.
+- **Footer.** Use a light planning invitation above an espresso footer, with the existing reverse logo, contact details, grouped links to destinations and experiences represented by published inventory, quick links, and available policy pages. Hide empty groups. Add verified credentials only when supplied by the business.
 
 ## UI acceptance checks
 

@@ -1,7 +1,7 @@
 /*
 Theme Name: Savannah Crest
 Description: WordPress block theme for Savannah Crest Safaris.
-Version: 0.3.0
+Version: 0.3.1
 Requires at least: 6.4
 Requires PHP: 7.4
 Text Domain: savannah-crest
@@ -253,11 +253,28 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 #enquiry-details .forminator-ui.forminator-custom-form .forminator-button-submit:hover { background: #422b20; color: var(--scs-paper); }
 
 .scs-site-footer { color: var(--scs-cream); background: var(--scs-espresso); margin-block-start: 0; }
-.scs-footer-inner { display: grid; grid-template-columns: minmax(15rem, 1fr) repeat(2, minmax(0, .5fr)); gap: 2rem; padding-block: clamp(2rem, 6vw, 4.25rem); }
-.scs-footer-inner a { color: var(--scs-cream); }
-.scs-footer-inner ul { list-style: none; margin: 0; padding: 0; }
-.scs-footer-inner li a { display: inline-flex; align-items: center; min-height: 38px; font-size: .93rem; }
-.scs-footer-brand .scs-site-mark img { width: 240px; max-width: 82vw; }
+.scs-footer-shell { padding-block: clamp(2.5rem, 5vw, 4.75rem) 1.5rem; }
+.scs-footer-invitation { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: clamp(1.5rem, 4vw, 3rem); color: var(--scs-espresso); background: var(--scs-cream); border-radius: .35rem; }
+.scs-footer-invitation h2 { margin: 0 0 .55rem; font-size: clamp(1.65rem, 3vw, 2.5rem); line-height: 1.2; }
+.scs-footer-invitation p { max-width: 42rem; margin: 0; line-height: 1.65; }
+.scs-footer-invitation__button, .scs-footer-enquire { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 48px; padding: .75rem 1.4rem; font-weight: 600; text-decoration: none; }
+.scs-footer-invitation__button { flex-shrink: 0; background: var(--scs-espresso); color: var(--scs-cream) !important; }
+.scs-footer-invitation__button:hover { background: #50382c; }
+.scs-footer-inner { display: grid; grid-template-columns: minmax(14rem, 1.25fr) repeat(3, minmax(0, 1fr)); gap: clamp(1.5rem, 3.5vw, 3.5rem); padding-block: clamp(3rem, 6vw, 5rem); }
+.scs-site-footer a { color: inherit; }
+.scs-footer-inner a:not(.scs-site-mark):not(.scs-footer-enquire), .scs-footer-bottom a { text-decoration: none; }
+.scs-footer-inner a:hover, .scs-footer-bottom a:hover { text-decoration: underline; text-underline-offset: .2em; }
+.scs-footer-inner ul, .scs-footer-bottom ul { list-style: none; margin: 0; padding: 0; }
+.scs-footer-inner li a { display: inline-block; padding-block: .35rem; font-size: .9rem; line-height: 1.5; }
+.scs-footer-brand .scs-site-mark { display: block; width: fit-content; }
+.scs-footer-brand .scs-site-mark img { width: 240px; max-width: 100%; height: auto; }
+.scs-footer-enquire { margin-block: 1.5rem 2.25rem; color: var(--scs-espresso) !important; background: var(--scs-cream); }
+.scs-footer-enquire:hover { background: #e8dbca; }
+.scs-footer-inner h2 { margin: 0 0 .85rem; color: var(--scs-cream); font-size: .83rem; font-weight: 600; line-height: 1.4; text-transform: uppercase; letter-spacing: .04em; }
+.scs-footer-contact a { display: block; width: fit-content; max-width: 100%; padding-block: .3rem; font-size: .9rem; overflow-wrap: anywhere; }
+.scs-footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 2rem; padding-block-start: 1.35rem; border-top: 1px solid rgba(247, 241, 229, .25); font-size: .8rem; }
+.scs-footer-bottom p { margin: 0; }
+.scs-footer-bottom ul { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
 
 @media (min-width: 600px) and (max-width: 1039px) {
 	.scs-primary-nav .wp-block-navigation__responsive-container-open:not(.always-shown) { display: flex; }
@@ -302,7 +319,8 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 	.scs-home-actions .scs-button { padding-inline: .66rem; }
 	.scs-footer-brand .scs-site-mark img { height: auto; }
 	.scs-card-grid, .scs-photo-grid, .scs-two-col, .scs-guides-query .wp-block-post-template.is-layout-grid { grid-template-columns: 1fr; }
-	.scs-footer-inner { gap: 1rem; }
+	.scs-footer-invitation { align-items: flex-start; flex-direction: column; gap: 1.3rem; }
+	.scs-footer-inner { gap: 2rem 1.2rem; }
 }
 @media (max-width: 350px) {
 	.scs-filter-form, .scs-finder .scs-filter-form { grid-template-columns: 1fr; }
