@@ -62,11 +62,6 @@ function menu_panels( string $planner, string $enquiry, string $stories ): array
 		$east = array_intersect_key( $countries, array_flip( array( 'kenya', 'tanzania', 'uganda', 'rwanda' ) ) );
 		$south = array_intersect_key( $countries, array_flip( array( 'botswana', 'namibia', 'south-africa', 'zambia', 'zimbabwe', 'malawi', 'mozambique' ) ) );
 		$elsewhere = array_diff_key( $countries, $east, $south );
-		$country_links = array();
-		foreach ( $countries as $country ) {
-			$country_links[ $country->name ] = add_query_arg( 'where', $country->slug, $catalogue );
-		}
-
 		$trips = Core\public_posts( Core\SAFARI, array( 'posts_per_page' => 5 ) );
 		$trip_links = array();
 		foreach ( $trips as $trip ) {
@@ -75,7 +70,7 @@ function menu_panels( string $planner, string $enquiry, string $stories ): array
 		$feature_trip = $trips[0] ?? null;
 		$recent_links = array_slice( $trip_links, 1 );
 		$panels[] = menu_panel( __( 'Safaris & tours', 'savannah-crest' ), __( 'View all safaris', 'savannah-crest' ), $catalogue, array(
-			menu_group( __( 'Safaris by country', 'savannah-crest' ), $country_links ),
+			menu_group( __( 'Safaris by country', 'savannah-crest' ), menu_term_links( $countries, 'where', $catalogue ) ),
 			menu_group( __( 'Recently added safaris', 'savannah-crest' ), $recent_links ),
 		), array(
 			'image' => 'menu-plains.webp',

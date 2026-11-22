@@ -20,7 +20,8 @@ $destinations = array();
 $experiences = array();
 if ( $catalogue && function_exists( 'SavannahCrest\Core\inventory_terms' ) && function_exists( 'SavannahCrest\Core\browse_term_url' ) ) {
 	$inventory = SavannahCrest\Core\inventory_terms();
-	$destinations = menu_term_links( array_slice( $inventory['where'], 0, 8 ), 'where', $catalogue );
+	$destination_terms = SavannahCrest\Core\country_guides() + $inventory['where'];
+	$destinations = menu_term_links( array_slice( $destination_terms, 0, 8 ), 'where', $catalogue );
 	$experiences = menu_term_links( array_slice( $inventory['experience'], 0, 8 ), 'experience', $catalogue );
 }
 $quick_links = array_filter( array(
