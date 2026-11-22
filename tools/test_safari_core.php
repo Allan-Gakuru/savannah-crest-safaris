@@ -165,6 +165,17 @@ check( itinerary_error( array( array_replace( $days[0], array( 'destination' => 
 check( itinerary_route( $days ), array( 'Mara' ), 'Adjacent identical destinations collapse' );
 check( price_label( $fields, '20261121' ), 'USD 2,150–3,100 per person sharing', 'Rate remains active through expiry date' );
 check( price_label( $fields, '20261122' ), 'Price on request', 'Expired rate resolves on read' );
+$undated_fields = $fields;
+unset( $undated_fields['scs_price_valid_until'] );
+check( publication_errors( $undated_fields, array( 2 ), 10, 'Test safari' ), array(), 'A missing validity date permits publication' );
+check( price_label( $undated_fields, '20261122' ), 'USD 2,150–3,100 per person sharing', 'Undated range stays visible' );
+$undated_from = array_replace( $fields, array( 'scs_price_mode' => 'from', 'scs_price_valid_until' => '' ) );
+check( publication_errors( $undated_from, array( 2 ), 10, 'Test safari' ), array(), 'A blank validity date permits publication' );
+check( price_label( $undated_from, '20261122' ), 'From USD 2,150 per person sharing', 'Undated starting price stays visible' );
+$invalid_expiry = array_replace( $fields, array( 'scs_price_valid_until' => '20270229' ) );
+check( count( publication_errors( $invalid_expiry, array( 2 ), 10, 'Test safari' ) ), 1, 'Reject an invalid supplied expiry date' );
+check( price_label( $invalid_expiry, '20261122' ), 'Price on request', 'An invalid date cannot turn a rate into an undated one' );
+check( price_label( array_replace( $undated_fields, array( 'scs_price_mode' => 'on_request' ) ), '20261122' ), 'Price on request', 'Quote-only mode ignores stored rates' );
 check( price_label( array_replace( $fields, array( 'scs_price_to' => 900 ) ), '20261121' ), 'Price on request', 'Reversed range stays hidden' );
 check( price_label( array_replace( $fields, array( 'scs_price_mode' => 'from', 'scs_price_to' => -1 ) ), '20261121' ), 'From USD 2,150 per person sharing', 'Inactive upper bound is ignored' );
 check( valid_rate_date( '2028-02-29' ), '20280229', 'Valid leap day' );

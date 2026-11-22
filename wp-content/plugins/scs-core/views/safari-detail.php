@@ -10,9 +10,10 @@ if ( ! $trip ) {
 $fields = safari_fields( $trip->ID );
 $days = rows( $fields['scs_itinerary'] );
 $route = route_for( $fields );
-$price = price_label( $fields, wp_date( 'Ymd' ) );
+$today = wp_date( 'Ymd' );
+$price = price_label( $fields, $today );
 $rate = rate( $fields );
-$rate_note = has_valid_rate( $rate ) && $rate['until'] >= wp_date( 'Ymd' ) ? $rate['note'] : '';
+$rate_note = has_current_rate( $rate, $today ) ? $rate['note'] : '';
 $planner = planner_url( 'publish' === $trip->post_status ? 'trip' : '', $trip->post_name );
 $primary = get_term( positive_int( $fields['scs_primary_destination'] ), DESTINATION );
 $primary_url = $primary instanceof \WP_Term && hub_ready( $primary ) ? get_term_link( $primary ) : '';

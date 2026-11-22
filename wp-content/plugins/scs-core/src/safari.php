@@ -40,13 +40,16 @@ function rate( array $fields ): array {
 	$mode = text( $fields['scs_price_mode'] ?? '' ) ?: 'on_request';
 	$from = amount( $fields['scs_price_from'] ?? null );
 	$to   = amount( $fields['scs_price_to'] ?? null );
+	$expiry = $fields['scs_price_valid_until'] ?? '';
+	// An empty field has no expiry. An invalid date must keep the rate hidden.
+	$until = '' === $expiry || false === $expiry ? '' : ( valid_rate_date( $expiry ) ?: null );
 	return array(
 		'mode'     => $mode,
 		'from'     => $from,
 		'to'       => $to,
 		'currency' => text( $fields['scs_price_currency'] ?? '' ),
 		'basis'    => text( $fields['scs_price_basis'] ?? '' ),
-		'until'    => valid_rate_date( $fields['scs_price_valid_until'] ?? '' ),
+		'until'    => $until,
 		'note'     => text( $fields['scs_price_note'] ?? '' ),
 	);
 }
@@ -55,7 +58,11 @@ function has_valid_rate( array $rate ): bool {
 	return in_array( $rate['mode'], array( 'from', 'range' ), true )
 		&& $rate['from'] > 0 && ( 'from' === $rate['mode'] || $rate['to'] >= $rate['from'] )
 		&& 'USD' === $rate['currency'] && in_array( $rate['basis'], PRICE_BASES, true )
-		&& '' !== $rate['until'] && '' !== $rate['note'];
+		&& null !== $rate['until'] && '' !== $rate['note'];
+}
+
+function has_current_rate( array $rate, string $today ): bool {
+	return has_valid_rate( $rate ) && ( '' === $rate['until'] || $rate['until'] >= $today );
 }
 
 function format_amount( float $value ): string {
@@ -64,7 +71,7 @@ function format_amount( float $value ): string {
 
 function price_label( array $fields, string $today ): string {
 	$rate = rate( $fields );
-	if ( ! has_valid_rate( $rate ) || $rate['until'] < $today ) {
+	if ( ! has_current_rate( $rate, $today ) ) {
 		return __( 'Price on request', 'scs-core' );
 	}
 	$basis = 'per_group' === $rate['basis'] ? __( 'per group', 'scs-core' ) : __( 'per person sharing', 'scs-core' );
@@ -112,7 +119,7 @@ function publication_errors( array $fields, array $destinations, int $image, str
 	}
 	$rate = rate( $fields );
 	if ( 'on_request' !== $rate['mode'] && ! has_valid_rate( $rate ) ) {
-		$errors[] = __( 'Complete the advertised rate, basis, validity date and pricing note, or choose Price on request.', 'scs-core' );
+		$errors[] = __( 'Complete the advertised rate, currency, basis and pricing note, and check any entered validity date. You can also choose Price on request.', 'scs-core' );
 	}
 	return $errors;
 }
