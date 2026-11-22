@@ -12,7 +12,11 @@ if ( 'enquiry' === ( $attributes['mode'] ?? '' ) ) {
 $context = active_context();
 ?>
 <section class="scs-planner" data-scs-planner data-scs-context="<?php echo esc_attr( $context['kind'] ?? 'general' ); ?>" data-scs-slug="<?php echo esc_attr( $context['slug'] ?? '' ); ?>">
-	<?php if ( $context ) : ?><p class="scs-context"><?php echo esc_html( sprintf( __( 'Planning around %s', 'scs-core' ), $context['title'] ) ); ?></p><?php endif; ?>
+	<?php if ( $context ) :
+		$context_label = 'trip' === $context['kind'] ? __( 'You’re enquiring about %s', 'scs-core' ) : __( 'Planning around %s', 'scs-core' );
+		?>
+		<p class="scs-context"><?php echo esc_html( sprintf( $context_label, $context['title'] ) ); ?></p>
+	<?php endif; ?>
 	<?php if ( $has_form ) : ?>
 		<?php echo do_shortcode( '[forminator_form id="' . (int) $settings['id'] . '"]' ); ?>
 	<?php else : ?>

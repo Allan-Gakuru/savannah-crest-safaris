@@ -21,6 +21,7 @@ require_once DIR . '/src/safari.php';
 require_once DIR . '/src/catalogue.php';
 require_once DIR . '/src/destinations.php';
 require_once DIR . '/src/planner.php';
+require_once DIR . '/src/planner-trip.php';
 require_once DIR . '/src/editorial.php';
 require_once DIR . '/src/seo.php';
 require_once DIR . '/src/blocks.php';

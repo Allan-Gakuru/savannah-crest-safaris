@@ -67,6 +67,9 @@ function sanitize_title_for_query( $value ) {
 	return strtolower( preg_replace( '/[^a-zA-Z0-9-]/', '', $value ) );
 }
 function get_page_by_path( $slug, $output, $type ) {
+	if ( 'scs_safari' === $type && isset( $GLOBALS['planner_test_trips'][ $slug ] ) ) {
+		return $GLOBALS['planner_test_trips'][ $slug ];
+	}
 	if ( 'enquire' === $slug && isset( $GLOBALS['enquiry_page'] ) ) {
 		return $GLOBALS['enquiry_page'];
 	}
@@ -125,7 +128,25 @@ function wp_unslash( $value ) {
 	return $value;
 }
 function sanitize_text_field( $value ) {
-	return strip_tags( $value );
+	return trim( strip_tags( $value ) );
+}
+function is_page( $slug ) {
+	return $slug === ( $GLOBALS['planner_test_page'] ?? '' );
+}
+function get_field( $name, $id ) {
+	return $GLOBALS['planner_test_fields'][ $id ][ $name ] ?? false;
+}
+function get_post_meta( $id ) {
+	return $GLOBALS['planner_test_form_meta'][ $id ] ?? array();
+}
+function maybe_unserialize( $value ) {
+	return is_string( $value ) ? unserialize( $value ) : $value;
+}
+function wp_get_post_terms( $id, $taxonomy, $args ) {
+	return $GLOBALS['planner_test_experiences'][ $id ] ?? array();
+}
+function esc_html( $value ) {
+	return htmlspecialchars( $value, ENT_QUOTES, 'UTF-8', false );
 }
 
 $plugin = dirname( __DIR__ ) . '/wp-content/plugins/scs-core/src/';
@@ -134,6 +155,7 @@ require $plugin . 'safari.php';
 require $plugin . 'catalogue.php';
 require $plugin . 'destinations.php';
 require $plugin . 'planner.php';
+require $plugin . 'planner-trip.php';
 
 use function SavannahCrest\Core\context_from_query;
 use function SavannahCrest\Core\context_from_token;
@@ -146,6 +168,8 @@ use function SavannahCrest\Core\parse_filters;
 use function SavannahCrest\Core\planner_entry_context;
 use function SavannahCrest\Core\price_label;
 use function SavannahCrest\Core\publication_errors;
+use function SavannahCrest\Core\safari_priority_choices;
+use function SavannahCrest\Core\tailor_planner_form;
 use function SavannahCrest\Core\valid_rate_date;
 
 $count = 0;
@@ -247,6 +271,84 @@ check( $saved['hidden-2'], '8', 'Server supplies the authoritative ID' );
 check( planner_entry_context( $entry, 88 ), $entry, 'Other forms are untouched' );
 $_POST['_scs_planner_context'] = 'trip:internal-draft';
 check( array_column( planner_entry_context( $entry, 77 ), 'value', 'name' )['hidden-3'], '', 'Unpublished context stays redacted at submission' );
+
+function planner_test_form_meta( bool $extra_question = false ): array {
+	$schema = array(
+		'radio-1' => 'radio', 'page-break-1' => 'page-break', 'number-1' => 'number',
+		'page-break-2' => 'page-break', 'number-2' => 'number', 'page-break-4' => 'page-break',
+		'radio-2' => 'radio', 'page-break-5' => 'page-break', 'checkbox-2' => 'checkbox', 'text-2' => 'text',
+	);
+	if ( $extra_question ) {
+		$schema['text-99'] = 'text';
+	}
+	$schema += array( 'page-break-6' => 'page-break', 'date-1' => 'date', 'email-1' => 'email' );
+	$fields = array();
+	foreach ( $schema as $id => $type ) {
+		$fields[ $id ] = array( 'id' => $id, 'type' => $type );
+	}
+	$fields['radio-2']['required'] = true;
+	$fields['radio-2']['options'] = array( array( 'label' => 'Wildlife', 'value' => 'wildlife' ) );
+	$fields['page-break-1']['conditions'] = array( array( 'element_id' => 'radio-1', 'value' => 'solo' ) );
+	return array( 'fields' => array_values( $fields ), 'settings' => array( 'pagination' => 'show' ) );
+}
+
+$amboseli = '3-day-amboseli-private-escapade';
+$rwanda = '4-day-rwanda-gorilla-and-golden-monkey-trekking-safari';
+$GLOBALS['planner_test_trips'] = array(
+	$amboseli => new WP_Post( 91, 'Amboseli Private Escapade', $amboseli, 'publish' ),
+	$rwanda => new WP_Post( 92, 'Rwanda Gorilla and Golden Monkey Trekking Safari', $rwanda, 'publish' ),
+);
+$general = planner_test_form_meta();
+$GLOBALS['planner_test_form_meta'][77] = array( 'forminator_form_meta' => array( serialize( $general ) ) );
+$_POST = array();
+$_GET = array( 'trip' => $amboseli );
+$GLOBALS['planner_test_page'] = 'enquire';
+check( tailor_planner_form( null, 77, 'forminator_form_meta', true ), null, 'The general enquiry uses the original form' );
+
+$GLOBALS['planner_test_page'] = 'plan-your-safari';
+$tour = tailor_planner_form( null, 77, 'forminator_form_meta', true )[0];
+$priority = array_column( $tour['fields'], null, 'id' )['radio-2'];
+$amboseli_choices = array_column( $priority['options'], 'value' );
+check( $amboseli_choices, array( 'More time watching elephants', 'Wildlife photography', 'A Maasai community visit', 'I’d like your advice' ), 'Tour links show the matching trip priorities' );
+check( $priority['required'], true, 'The tailored priority question stays required' );
+check(
+	array_column( $tour['fields'], 'id' ),
+	array( 'radio-1', 'page-break-1', 'number-1', 'page-break-2', 'number-2', 'page-break-4', 'radio-2', 'page-break-6', 'date-1', 'email-1' ),
+	'Remove exactly the destination page and its questions'
+);
+check( $tour['fields'][1], $general['fields'][1], 'The solo skip rule stays intact' );
+check( $tour['settings'], $general['settings'], 'Tailoring leaves Forminator settings intact' );
+check( get_post_meta( 77 )['forminator_form_meta'][0], serialize( $general ), 'Tailoring leaves the stored form intact' );
+check( tailor_planner_form( null, 88, 'forminator_form_meta', true ), null, 'Leave unrelated forms untouched' );
+
+$GLOBALS['planner_test_page'] = '';
+$_POST = array( 'action' => 'forminator_submit_form_custom-forms', 'form_id' => '77', '_scs_planner_context' => 'trip:' . $rwanda );
+$submitted = tailor_planner_form( null, 77, 'forminator_form_meta', true )[0];
+$rwanda_choices = array_column( array_column( $submitted['fields'], null, 'id' )['radio-2']['options'], 'value' );
+check( in_array( 'Golden monkey trekking', $rwanda_choices, true ), true, 'AJAX validation gets the options for the submitted itinerary' );
+check( array_intersect( $amboseli_choices, $rwanda_choices ), array( 3 => 'I’d like your advice' ), 'Different itineraries offer different choices' );
+$entry = array( array( 'name' => 'radio-2', 'value' => $rwanda_choices[1] ) );
+$saved = array_column( planner_entry_context( $entry, 77 ), 'value', 'name' );
+check( $saved['radio-2'], 'Golden monkey trekking', 'The saved entry retains the selected text' );
+check( $saved['hidden-3'], 'Rwanda Gorilla and Golden Monkey Trekking Safari', 'The form saves the authoritative tour title' );
+
+$changed = planner_test_form_meta( true );
+$GLOBALS['planner_test_form_meta'][77]['forminator_form_meta'][0] = serialize( $changed );
+$tailored = tailor_planner_form( null, 77, 'forminator_form_meta', true )[0];
+check( array_column( $tailored['fields'], 'id' ), array_column( $changed['fields'], 'id' ), 'Preserve a destination page if an editor added an unrelated question' );
+
+foreach ( array( 'trip:internal-draft', 'trip:unknown', array( 'trip:' . $amboseli ) ) as $token ) {
+	$_POST['_scs_planner_context'] = $token;
+	check( tailor_planner_form( null, 77, 'forminator_form_meta', true ), null, 'Invalid tour context keeps the general questions' );
+}
+$_POST = array();
+$_GET = array();
+
+$trip_data = context_from_query( array( 'trip' => $amboseli ) );
+$GLOBALS['planner_test_fields'][91]['scs_enquiry_priorities'] = "A private &lt;b&gt;photography&lt;/b&gt; drive\r\n\r\nA private photography drive\nBush breakfast\nI’d like your advice";
+check( safari_priority_choices( $trip_data ), array( 'A private photography drive', 'Bush breakfast', 'I’d like your advice' ), 'The editor can replace the suggestions with distinct plain text choices' );
+$GLOBALS['planner_test_experiences'][8] = array( 'walking-cycling' );
+check( safari_priority_choices( context_from_query( array( 'trip' => 'approved' ) ) )[0], 'More time walking or cycling', 'New itineraries get choices based on their experiences' );
 
 $GLOBALS['enquiry_insert_attempts'] = 0;
 ensure_enquiry_page();

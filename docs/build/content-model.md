@@ -49,6 +49,7 @@ Use the native title for H1, featured image for the main photograph, excerpt for
 | `scs_itinerary` | Repeater | At least one day or grouped range, in order. See subfields below. |
 | `scs_best_time` | Repeater of month checkboxes and note | Optional. Set after operations validates the advice. Keep the explanation visible in text. |
 | `scs_related_safaris` | Relationship, safari IDs | Optional manual picks, excluding self. Fall back to matching primary destination and then experience. |
+| `scs_enquiry_priorities` | Textarea | Optional. In **Safari details → Presentation**, enter up to five short choices, one per line. Leave blank to use the suggestions. The form adds “I’d like your advice”. |
 
 The itinerary repeater has `day_from` and optional `day_to` positive integer fields, `heading` text, `destination` taxonomy term ID, `narrative` WYSIWYG, optional `stay` post object ID, optional `stay_label` fallback, optional `meals` and `transfer_note` text, and an optional `image` attachment ID. Require ordered ranges beginning on Day 1, ending at `scs_duration_days`, and covering each day once. Default an empty end to the start. Validate linked terms and published stay status on render. If a stay is unpublished, render an approved fallback label or omit the stay link. Derive the displayed route sequence by collapsing consecutive repeated day destinations. [SCF Repeater](https://developer.wordpress.org/secure-custom-fields/features/field/repeater/) · [Post Object](https://developer.wordpress.org/secure-custom-fields/code-reference/fields/post-object/).
 
