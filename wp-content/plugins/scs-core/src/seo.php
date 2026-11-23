@@ -105,3 +105,8 @@ function yoast_sitemap_entry( $entry, $type, $object ) {
 	}
 	return $entry;
 }
+
+function yoast_sitemap_hide_empty_terms( bool $hide_empty, string $taxonomy ): bool {
+	// The sitemap entry filter still screens destination guides for readiness.
+	return DESTINATION === $taxonomy ? false : $hide_empty;
+}

@@ -37,7 +37,7 @@ return array(
 		'intro' => 'A northern Tanzania safari can take you from Tarangire’s baobabs to the Serengeti plains and into the Ngorongoro Crater. Add Zanzibar if you want time at the coast after your game drives.',
 		'alt' => 'A giraffe among acacia trees on the Serengeti plains in Tanzania',
 		'places' => array(
-			'serengeti' => array( 'Serengeti National Park', 'The migrating herds move between areas through the year. Decide which part of the park to visit before choosing a camp, especially if you have only a few nights.' ),
+			'serengeti-national-park' => array( 'Serengeti National Park', 'The migrating herds move between areas through the year. Decide which part of the park to visit before choosing a camp, especially if you have only a few nights.' ),
 			'ngorongoro' => array( 'Ngorongoro Crater', 'Spend time on the crater floor looking for grazers and predators against the steep caldera walls. An overnight stop nearby makes an early start easier.' ),
 			'tarangire' => array( 'Tarangire National Park', 'Elephants and baobabs are the calling cards here. The river is a useful focus for game drives in dry months.' ),
 			'zanzibar' => array( 'Zanzibar', 'Give yourself a few days for Stone Town, a beach stay and time on the water if you want a quieter finish to the trip.' ),

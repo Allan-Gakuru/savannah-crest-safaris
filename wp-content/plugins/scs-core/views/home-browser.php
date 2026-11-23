@@ -18,8 +18,9 @@ $front = (int) get_option( 'page_on_front' );
 $safaris = matching_safaris( array(), $front ? ids( field( 'scs_home_featured_trips', $front ) ) : array(), 5 );
 $enquiry_url = page_url( ENQUIRY_SLUG ) ?: planner_url();
 $place_picks = $front ? ids( field( 'scs_home_featured_places', $front ) ) : array();
-$parks = array_filter( inventory_terms()['where'], static function ( \WP_Term $term ): bool {
-	return (bool) $term->parent;
+$curated = curated_destination_guides();
+$parks = array_filter( inventory_terms()['where'], static function ( \WP_Term $term ) use ( $curated ): bool {
+	return $term->parent && ! isset( $curated[ $term->slug ] );
 } );
 $parks = array_column( $parks, null, 'term_id' );
 $parks = array_replace( array_intersect_key( array_fill_keys( $place_picks, null ), $parks ), $parks );
@@ -38,9 +39,10 @@ $experiences = ready_terms( EXPERIENCE, array(), array(), 4 );
 	</section>
 <?php endif; ?>
 <?php require __DIR__ . '/home-countries.php'; ?>
+<?php require __DIR__ . '/home-curated.php'; ?>
 <?php if ( $parks ) : ?>
 	<section class="scs-shell scs-section scs-home-destinations">
-		<h2><?php esc_html_e( 'Parks and places to explore', 'scs-core' ); ?></h2>
+		<h2><?php esc_html_e( 'More parks and places to explore', 'scs-core' ); ?></h2>
 		<?php term_items( array_slice( $parks, 0, 3 ), 'where' ); ?>
 	</section>
 <?php endif; ?>

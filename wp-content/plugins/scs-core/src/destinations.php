@@ -13,11 +13,60 @@ function destination_guides(): array {
 	return $guides;
 }
 
+function curated_destination_guides(): array {
+	static $guides;
+	$guides ??= require __DIR__ . '/../content/curated-destinations.php';
+	return $guides;
+}
+
 function destination_guide( \WP_Term $term ): array {
-	if ( DESTINATION !== $term->taxonomy || ! isset( destination_guides()[ $term->slug ] ) ) {
+	if ( DESTINATION !== $term->taxonomy ) {
 		return array();
 	}
-	return isset( inventory_terms()['where'][ $term->slug ] ) ? destination_guides()[ $term->slug ] : array();
+	if ( isset( curated_destination_guides()[ $term->slug ] ) ) {
+		return curated_destination_guides()[ $term->slug ];
+	}
+	$country = destination_guides()[ $term->slug ] ?? array();
+	return $country && isset( inventory_terms()['where'][ $term->slug ] ) ? $country : array();
+}
+
+function provision_curated_destinations(): void {
+	$option = 'scs_curated_destinations_seeded';
+	$completed = (array) get_option( $option, array() );
+	$updated = $completed;
+	foreach ( array_diff_key( curated_destination_guides(), $completed ) as $slug => $guide ) {
+		$term = get_term_by( 'slug', $slug, DESTINATION );
+		if ( ! $term instanceof \WP_Term ) {
+			$parent_id = 0;
+			if ( isset( $guide['parent'] ) ) {
+				$parent = get_term_by( 'slug', $guide['parent'], DESTINATION );
+				if ( ! $parent instanceof \WP_Term ) {
+					continue;
+				}
+				$parent_id = $parent->term_id;
+			}
+			// Keep an existing term and its editorial settings if another request created it.
+			wp_insert_term( $guide['name'], DESTINATION, array( 'slug' => $slug, 'parent' => $parent_id ) );
+			$term = get_term_by( 'slug', $slug, DESTINATION );
+			if ( ! $term instanceof \WP_Term ) {
+				continue;
+			}
+		}
+		if ( isset( $guide['seed_trip'] ) ) {
+			$safari = get_page_by_path( $guide['seed_trip'], OBJECT, SAFARI );
+			if ( ! $safari instanceof \WP_Post || 'publish' !== $safari->post_status || '' !== $safari->post_password ) {
+				continue;
+			}
+			if ( ! has_term( (int) $term->term_id, DESTINATION, $safari->ID ) &&
+				is_wp_error( wp_add_object_terms( $safari->ID, (int) $term->term_id, DESTINATION ) ) ) {
+				continue;
+			}
+		}
+		$updated[ $slug ] = true;
+	}
+	if ( $updated !== $completed ) {
+		update_option( $option, $updated, false );
+	}
 }
 
 function country_guides(): array {

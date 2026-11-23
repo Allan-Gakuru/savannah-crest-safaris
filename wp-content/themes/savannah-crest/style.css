@@ -1,7 +1,7 @@
 /*
 Theme Name: Savannah Crest
 Description: WordPress block theme for Savannah Crest Safaris.
-Version: 0.3.6
+Version: 0.3.7
 Requires at least: 6.4
 Requires PHP: 7.4
 Text Domain: savannah-crest
@@ -197,6 +197,29 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 .scs-country-card__body a { display: inline-flex; align-items: center; gap: .55em; min-height: 44px; margin-block-start: auto; color: var(--scs-espresso); }
 .scs-country-card__body a:hover { color: var(--scs-muted); }
 .scs-home-countries__all { margin-block-start: clamp(1.1rem, 3vw, 2rem); }
+
+.scs-home-curated__intro { max-inline-size: 48rem; }
+.scs-home-curated__intro h2 { text-wrap: balance; }
+.scs-home-curated__intro p { max-inline-size: 60ch; margin-block-end: 0; color: var(--scs-muted); }
+.scs-curated-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(1rem, 2.5vw, 1.75rem); margin: clamp(1.35rem, 3vw, 2rem) 0 0; padding: 0; list-style: none; }
+.scs-curated-grid > li { display: flex; min-inline-size: 0; }
+.scs-curated-card { display: flex; flex: 1; flex-direction: column; color: var(--scs-espresso); background: var(--scs-paper); border: 1px solid var(--scs-line); text-decoration: none; }
+.scs-curated-card__media { position: relative; aspect-ratio: 8 / 5; flex: none; background: var(--scs-sand); }
+.scs-curated-card__media img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+.scs-curated-card__body { display: flex; flex: 1; flex-direction: column; align-items: start; gap: .55rem; padding: clamp(1rem, 2.05vw, 1.4rem); }
+.scs-curated-card .scs-curated-card__body h3 { margin: 0; font-size: clamp(1.22rem, 2vw, 1.58rem); }
+.scs-curated-card__body p { margin: 0; color: var(--scs-muted); font-size: .92rem; line-height: 1.6; }
+.scs-curated-card__body .scs-text-link { display: inline-flex; min-block-size: 44px; align-items: center; margin-block-start: auto; }
+.scs-curated-card:is(:hover, :focus-visible) .scs-text-link { text-decoration-thickness: 2px; }
+.scs-home-curated__actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-block-start: clamp(1.2rem, 3vw, 2rem); }
+@media (min-width: 600px) {
+	.scs-curated-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 950px) {
+	.scs-curated-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+	.scs-curated-grid > li { grid-column: span 2; }
+	.scs-curated-grid > li:nth-child(4):nth-last-child(2) { grid-column: 2 / span 2; }
+}
 
 .scs-country-guide__hero { background: var(--scs-sand); color: var(--scs-espresso); }
 .scs-country-guide__intro { padding: clamp(1.35rem, 4vw, 3.55rem); }

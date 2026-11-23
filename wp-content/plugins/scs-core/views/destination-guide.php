@@ -7,8 +7,10 @@ $picks = ids( term_field( 'scs_term_featured_trips', $term ) );
 $safaris = matching_safaris( array( term_clause( $term ) ), $picks, 6 );
 $inventory = inventory_terms()['where'];
 $directory = page_url( 'destinations' );
-$parent = $inventory[ DESTINATION_REGIONS[ $term->slug ] ?? '' ] ?? null;
-$parent_url = $parent ? browse_term_url( $parent, 'where', catalogue_url() ) : '';
+$parent = $term->parent ? get_term( $term->parent, DESTINATION ) : ( $inventory[ DESTINATION_REGIONS[ $term->slug ] ?? '' ] ?? null );
+$parent_url = $parent instanceof \WP_Term ? browse_term_url( $parent, 'where', catalogue_url() ) : '';
+$is_curated = isset( curated_destination_guides()[ $term->slug ] );
+$places_heading = $is_curated ? __( 'What to experience', 'scs-core' ) : __( 'Where to go', 'scs-core' );
 $catalogue = catalogue_url();
 $all_trips = $catalogue ? add_query_arg( 'where', $term->slug, $catalogue ) : '';
 $plan = planner_url( 'destination', $term->slug );
@@ -49,7 +51,7 @@ foreach ( rows( term_field( 'scs_term_faqs', $term ) ) as $faq ) {
 	<nav class="scs-country-guide__jump" aria-label="<?php esc_attr_e( 'In this guide', 'scs-core' ); ?>">
 		<ul role="list">
 			<?php if ( $safaris ) : ?><li><a href="#destination-trips"><?php esc_html_e( 'Itineraries', 'scs-core' ); ?></a></li><?php endif; ?>
-			<li><a href="#destination-places"><?php esc_html_e( 'Where to go', 'scs-core' ); ?></a></li>
+			<li><a href="#destination-places"><?php echo esc_html( $places_heading ); ?></a></li>
 			<li><a href="#destination-timing"><?php esc_html_e( 'When to go', 'scs-core' ); ?></a></li>
 			<li><a href="#destination-planning"><?php esc_html_e( 'Planning tips', 'scs-core' ); ?></a></li>
 			<li><a href="#destination-faqs"><?php esc_html_e( 'FAQs', 'scs-core' ); ?></a></li>
@@ -64,10 +66,16 @@ foreach ( rows( term_field( 'scs_term_faqs', $term ) ) as $faq ) {
 			</div>
 			<?php cards( $safaris ); ?>
 		</section>
+	<?php elseif ( $is_curated && $plan ) : ?>
+		<section class="scs-section">
+			<h2><?php printf( esc_html__( 'Plan a trip to %s', 'scs-core' ), esc_html( $guide['name'] ) ); ?></h2>
+			<p class="scs-prose"><?php esc_html_e( 'Share your dates and the other places you’d like to visit. We’ll help you work this destination into a safari route.', 'scs-core' ); ?></p>
+			<?php echo action_link( $plan, __( 'Plan a custom trip', 'scs-core' ), 'scs-button', 'destination-custom-trip' ); ?>
+		</section>
 	<?php endif; ?>
 
 	<section id="destination-places" class="scs-section">
-		<h2><?php esc_html_e( 'Where to go', 'scs-core' ); ?></h2>
+		<h2><?php echo esc_html( $places_heading ); ?></h2>
 		<dl class="scs-country-guide__notes">
 			<?php foreach ( $guide['places'] as $slug => list( $name, $description ) ) : ?>
 				<?php $url = isset( $inventory[ $slug ] ) ? browse_term_url( $inventory[ $slug ], 'where', $catalogue ) : ''; ?>

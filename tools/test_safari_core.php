@@ -11,6 +11,7 @@ class WP_Term {
 	public $slug;
 	public $term_id;
 	public $taxonomy;
+	public $parent = 0;
 	public $description = 'Approved destination guidance.';
 
 	public function __construct( int $id, string $name, string $slug, string $taxonomy = 'scs_destination' ) {
@@ -35,6 +36,8 @@ class WP_Post {
 		$this->post_status = $status;
 	}
 }
+
+class WP_Error {}
 
 function __( $value, $domain = '' ) {
 	return $value;
@@ -99,7 +102,7 @@ function delete_option( $key ) {
 	unset( $GLOBALS['enquiry_options'][ $key ] );
 }
 function is_wp_error( $value ) {
-	return false;
+	return $value instanceof WP_Error;
 }
 function get_posts( $args ) {
 	return array( 8 );
@@ -111,7 +114,28 @@ function get_ancestors( $id, $taxonomy, $type ) {
 	return array();
 }
 function get_term_link( WP_Term $term ) {
+	foreach ( $GLOBALS['destination_test_terms'] ?? array() as $parent ) {
+		if ( $parent->term_id === $term->parent ) {
+			return get_term_link( $parent ) . $term->slug . '/';
+		}
+	}
 	return '/destinations/' . $term->slug . '/';
+}
+function wp_insert_term( $name, $taxonomy, $options ) {
+	$term = new WP_Term( 100 + count( $GLOBALS['destination_test_terms'] ), $name, $options['slug'], $taxonomy );
+	$term->parent = $options['parent'];
+	$GLOBALS['destination_test_terms'][ $term->slug ] = $term;
+	return array( 'term_id' => $term->term_id );
+}
+function has_term( $term_id, $taxonomy, $post_id ) {
+	return in_array( $term_id, $GLOBALS['curated_test_assignments'][ $post_id ] ?? array(), true );
+}
+function wp_add_object_terms( $post_id, $term_id, $taxonomy ) {
+	if ( ( $GLOBALS['curated_test_failed_post'] ?? 0 ) === $post_id ) {
+		return new WP_Error();
+	}
+	$GLOBALS['curated_test_assignments'][ $post_id ][] = $term_id;
+	return array( $term_id );
 }
 function wp_insert_post( $page, $report_errors ) {
 	$GLOBALS['enquiry_insert_attempts']++;
@@ -121,8 +145,13 @@ function wp_insert_post( $page, $report_errors ) {
 	$GLOBALS['enquiry_page'] = new WP_Post( 80, $page['post_title'], $page['post_name'], $page['post_status'] );
 	return 80;
 }
-function get_option( $name ) {
-	return array( 'id' => 77, 'context_kind' => 'hidden-1', 'context_id' => 'hidden-2', 'context_title' => 'hidden-3' );
+function get_option( $name, $default = false ) {
+	return 'scs_planner_form' === $name
+		? array( 'id' => 77, 'context_kind' => 'hidden-1', 'context_id' => 'hidden-2', 'context_title' => 'hidden-3' )
+		: ( $GLOBALS['curated_test_options'][ $name ] ?? $default );
+}
+function update_option( $name, $value, $autoload ) {
+	$GLOBALS['curated_test_options'][ $name ] = $value;
 }
 function wp_unslash( $value ) {
 	return $value;
@@ -156,6 +185,7 @@ require $plugin . 'catalogue.php';
 require $plugin . 'destinations.php';
 require $plugin . 'planner.php';
 require $plugin . 'planner-trip.php';
+require $plugin . 'seo.php';
 
 use function SavannahCrest\Core\context_from_query;
 use function SavannahCrest\Core\context_from_token;
@@ -255,6 +285,44 @@ check( SavannahCrest\Core\browse_term_url( $countries['kenya'], 'where', '/safar
 check( SavannahCrest\Core\term_clause( $countries['tanzania'] )['terms'], array( 22, 23 ), 'Tanzania trips include the existing Zanzibar term' );
 check( SavannahCrest\Core\term_clause( $GLOBALS['destination_test_terms']['zanzibar'] )['terms'], array( 23 ), 'Zanzibar retains its own narrower trip query' );
 check( context_from_query( array( 'destination' => 'tanzania' ) )['id'], 22, 'A country guide starts an enquiry with destination context' );
+
+$GLOBALS['destination_test_terms']['south-africa'] = new WP_Term( 25, 'South Africa', 'south-africa' );
+$mara_term = new WP_Term( 26, 'Existing Maasai Mara', 'maasai-mara' );
+$mara_term->parent = 21;
+$GLOBALS['destination_test_terms']['maasai-mara'] = $mara_term;
+$guides = SavannahCrest\Core\curated_destination_guides();
+check( array_keys( $guides ), array( 'kruger-national-park', 'serengeti-national-park', 'victoria-falls', 'okavango-delta', 'maasai-mara' ), 'The curated homepage order matches the intended routes' );
+$kruger = $guides['kruger-national-park']['seed_trip'];
+$serengeti = $guides['serengeti-national-park']['seed_trip'];
+$okavango = $guides['okavango-delta']['seed_trip'];
+$GLOBALS['planner_test_trips'] = array(
+	$kruger => new WP_Post( 101, 'Kruger', $kruger, 'publish' ),
+	$serengeti => new WP_Post( 102, 'Serengeti', $serengeti, 'publish' ),
+	$okavango => new WP_Post( 103, 'Okavango', $okavango, 'draft' ),
+);
+$GLOBALS['curated_test_assignments'] = array( 101 => array( 25 ), 102 => array( 22 ), 103 => array( 20 ) );
+$GLOBALS['curated_test_failed_post'] = 102;
+SavannahCrest\Core\provision_curated_destinations();
+$kruger_term = get_term_by( 'slug', 'kruger-national-park', 'scs_destination' );
+check( $kruger_term->parent, 25, 'Kruger is created beneath South Africa' );
+check( $GLOBALS['curated_test_assignments'][101], array( 25, $kruger_term->term_id ), 'Initial setup appends the park while preserving the country assignment' );
+check( $GLOBALS['curated_test_assignments'][102], array( 22 ), 'A failed assignment is left for retry' );
+check( $GLOBALS['curated_test_assignments'][103], array( 20 ), 'Setup never attaches a draft itinerary' );
+check( get_term_by( 'slug', 'maasai-mara', 'scs_destination' ), $mara_term, 'Setup preserves the existing Mara term' );
+$falls = get_term_by( 'slug', 'victoria-falls', 'scs_destination' );
+check( $falls->parent, 0, 'Victoria Falls has a cross-border destination route' );
+check( context_from_query( array( 'destination' => 'victoria-falls' ) )['id'], $falls->term_id, 'Victoria Falls accepts contextual enquiries without a listed tour' );
+check( SavannahCrest\Core\browse_term_url( $kruger_term, 'where', '/safaris/' ), '/destinations/south-africa/kruger-national-park/', 'Curated links resolve to their hierarchical guide' );
+check( SavannahCrest\Core\yoast_sitemap_hide_empty_terms( true, 'scs_destination' ), false, 'An unstocked curated destination is eligible for the sitemap' );
+check( SavannahCrest\Core\yoast_sitemap_entry( array( 'loc' => '/destinations/victoria-falls/' ), 'term', $falls ), array( 'loc' => '/destinations/victoria-falls/' ), 'Victoria Falls passes the published guide sitemap rule' );
+$GLOBALS['curated_test_failed_post'] = 0;
+$GLOBALS['planner_test_trips'][ $okavango ]->post_status = 'publish';
+SavannahCrest\Core\provision_curated_destinations();
+check( count( $GLOBALS['curated_test_assignments'][102] ), 2, 'A failed attachment can be retried' );
+check( count( $GLOBALS['curated_test_assignments'][103] ), 2, 'An itinerary can be assigned once it becomes public' );
+$GLOBALS['curated_test_assignments'][101] = array( 25 );
+SavannahCrest\Core\provision_curated_destinations();
+check( $GLOBALS['curated_test_assignments'][101], array( 25 ), 'Subsequent requests preserve later editorial edits' );
 
 check( context_from_query( array( 'trip' => 'approved' ) )['id'], 8, 'Accept public itinerary context' );
 check( context_from_query( array( 'trip' => 'internal-draft' ) ), array(), 'Draft context is hidden' );

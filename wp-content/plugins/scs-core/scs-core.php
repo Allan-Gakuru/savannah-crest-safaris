@@ -27,6 +27,7 @@ require_once DIR . '/src/seo.php';
 require_once DIR . '/src/blocks.php';
 
 add_action( 'init', __NAMESPACE__ . '\register_content', 5 );
+add_action( 'init', __NAMESPACE__ . '\provision_curated_destinations', 8 );
 add_action( 'init', __NAMESPACE__ . '\register_blocks' );
 add_action( 'init', __NAMESPACE__ . '\maybe_refresh_rewrites', 99 );
 add_action( 'admin_notices', __NAMESPACE__ . '\dependency_notice' );
@@ -61,6 +62,7 @@ add_action( 'wp_enqueue_scripts', static function (): void {
 	}
 } );
 add_filter( 'wpseo_sitemap_entry', __NAMESPACE__ . '\yoast_sitemap_entry', 10, 3 );
+add_filter( 'wpseo_sitemap_exclude_empty_terms_taxonomy', __NAMESPACE__ . '\yoast_sitemap_hide_empty_terms', 10, 2 );
 
 register_activation_hook( FILE, __NAMESPACE__ . '\activate' );
 register_deactivation_hook( FILE, __NAMESPACE__ . '\deactivate' );

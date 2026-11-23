@@ -11,7 +11,7 @@ foreach ( ready_terms( $taxonomy ) as $term ) {
 	$terms[ $term->slug ] = $term;
 }
 $primary = $experience ? $terms : array_filter( $terms, static function ( \WP_Term $term ): bool {
-	return ! $term->parent && ! isset( DESTINATION_REGIONS[ $term->slug ] );
+	return ! $term->parent && ! isset( DESTINATION_REGIONS[ $term->slug ] ) && ! isset( curated_destination_guides()[ $term->slug ] );
 } );
 $sections = $experience
 	? array( __( 'Find an experience', 'scs-core' ) => $primary )
