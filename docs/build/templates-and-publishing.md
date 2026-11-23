@@ -33,7 +33,7 @@ Use HTML block templates in the standalone `savannah-crest` theme to compose pag
 
 ## 3. Build the landing pages
 
-- **Home.** Pitch the local planning proposition in one sentence and show a clear path to trips. Only pin published picks. When a pick is unpublished, hide it and fill remaining spaces from eligible published items as available. Render the approved photographic and brand layout from [Theme and UI](theme-and-ui.md).
+- **Home.** Pitch the local planning proposition in one sentence and show a clear path to trips. Feature up to five published itineraries, with editor picks first. Fill any remaining spaces from eligible published trips. Close the grid with the general enquiry card. Render the approved photographic and brand layout from [Theme and UI](theme-and-ui.md).
 - **Destinations.** The country cards link to the existing taxonomy routes. Keep the guide copy in `scs-core/content/destination-guides.php` and the matching responsive photos in the theme. Show one card per guide with published trips, with Kenya first. Country guides show matched trips, places, season guidance, planning tips and FAQs. Zanzibar has its own guide and appears in Tanzania’s matching trips while keeping its existing URL.
 - **Experiences.** Group family and honeymoon separately when the offer genuinely differs. Use a unique decision guide for each and explain relevant constraints. Link to curated trips and matching destinations.
 - **Guides.** Build practical evergreen articles such as timing, choosing a route, and how bespoke trips are quoted. A travel advisor reviews facts and the published reviewed date. Use links with meaningful labels to relevant hubs and itineraries.

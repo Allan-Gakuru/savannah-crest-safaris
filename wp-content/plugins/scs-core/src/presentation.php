@@ -26,31 +26,85 @@ function duration_label( $value ): string {
 	return $days ? sprintf( _n( '%s day', '%s days', $days, 'scs-core' ), number_format_i18n( $days ) ) : '';
 }
 
-function cards( array $safaris ): void {
-	if ( ! $safaris ) {
+function safari_card_thumbnail( \WP_Post $safari, array $gallery ): string {
+	static $selections;
+	$selections ??= require __DIR__ . '/../content/safari-card-media.php';
+	$cover = (int) get_post_thumbnail_id( $safari );
+	$picked = $selections[ $safari->post_name ] ?? array();
+	$picked = $cover === ( $picked['cover'] ?? 0 ) ? $picked : array();
+	$sizes = '(max-width: 560px) 92vw, (max-width: 900px) 46vw, (max-width: 1328px) 31vw, 390px';
+
+	if ( isset( $picked['asset'] ) ) {
+		$asset = 'assets/images/' . $picked['asset'];
+		if ( is_readable( DIR . '/' . $asset . '-960.webp' ) && is_readable( DIR . '/' . $asset . '-480.webp' ) ) {
+			$small = plugins_url( $asset . '-480.webp', FILE );
+			$large = plugins_url( $asset . '-960.webp', FILE );
+			return sprintf(
+				'<img src="%1$s" srcset="%2$s 480w, %1$s 960w" sizes="%3$s" width="960" height="640" alt="%4$s" loading="lazy" decoding="async">',
+				esc_url( $large ),
+				esc_url( $small ),
+				esc_attr( $sizes ),
+				esc_attr( $picked['alt'] )
+			);
+		}
+	}
+
+	$attachment = $picked['attachment'] ?? 0;
+	$preferred = in_array( $attachment, $gallery, true ) ? $attachment : 0;
+	$attributes = array( 'sizes' => $sizes, 'loading' => 'lazy', 'decoding' => 'async' );
+	foreach ( array_unique( array_merge( array( $preferred, $cover ), $gallery ) ) as $id ) {
+		$photo = image( $id, 'medium_large', $attributes );
+		if ( $photo ) {
+			return $photo;
+		}
+	}
+	return '';
+}
+
+function cards( array $safaris, string $enquiry_url = '' ): void {
+	if ( ! $safaris && '' === $enquiry_url ) {
 		return;
 	}
 	echo '<ul class="scs-card-grid" role="list">';
 	foreach ( $safaris as $safari ) {
 		$fields = safari_fields( $safari->ID );
 		$route  = term_label( $fields['scs_primary_destination'] ) ?: route_for( $fields );
-		$photo  = image( get_post_thumbnail_id( $safari ), 'large', array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) );
+		$days = duration_label( $fields['scs_duration_days'] );
+		$title = get_the_title( $safari );
+		$overview = wp_trim_words( strip_shortcodes( get_the_excerpt( $safari ) ), 28 );
+		$photo = safari_card_thumbnail( $safari, ids( $fields['scs_gallery'] ) );
 		?>
 		<li class="scs-card">
-			<a class="scs-card__link" href="<?php echo esc_url( get_permalink( $safari ) ); ?>">
-				<?php if ( $photo ) : ?><div class="scs-card__image"><?php echo $photo; // WordPress attachment markup. ?></div><?php endif; ?>
+			<a class="scs-card__link" href="<?php echo esc_url( get_permalink( $safari ) ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'View trip details for %s', 'scs-core' ), $title ) ); ?>">
+				<div class="scs-card__image">
+					<?php echo $photo; // Escaped image markup. ?>
+					<?php if ( $days ) : ?><span class="scs-card__duration"><?php echo esc_html( $days ); ?></span><?php endif; ?>
+				</div>
 				<div class="scs-card__body">
-					<?php if ( $route || $fields['scs_duration_days'] ) : ?>
-						<p class="scs-card__meta"><?php echo esc_html( implode( ' · ', array_filter( array( $route, duration_label( $fields['scs_duration_days'] ) ) ) ) ); ?></p>
-					<?php endif; ?>
-					<h3><?php echo esc_html( get_the_title( $safari ) ); ?></h3>
-					<?php if ( $safari->post_excerpt ) : ?><p><?php echo esc_html( wp_strip_all_tags( $safari->post_excerpt ) ); ?></p><?php endif; ?>
-					<p class="scs-card__price"><span><?php echo esc_html( price_label( $fields, wp_date( 'Ymd' ) ) ); ?></span><span aria-hidden="true">↗</span></p>
+					<?php if ( $route ) : ?><p class="scs-card__meta"><?php echo esc_html( $route ); ?></p><?php endif; ?>
+					<h3><?php echo esc_html( $title ); ?></h3>
+					<?php if ( $overview ) : ?><p class="scs-card__overview"><?php echo esc_html( $overview ); ?></p><?php endif; ?>
+					<div class="scs-card__footer">
+						<p class="scs-card__price"><?php echo esc_html( price_label( $fields, wp_date( 'Ymd' ) ) ); ?></p>
+						<span class="scs-button scs-button--outline scs-card__action"><?php esc_html_e( 'View trip details', 'scs-core' ); ?></span>
+					</div>
 				</div>
 			</a>
 		</li>
 		<?php
 	}
+	if ( '' !== $enquiry_url ) :
+		?>
+		<li class="scs-card scs-card--dream">
+			<div class="scs-card__image" aria-hidden="true"></div>
+			<div class="scs-card__body">
+				<h3><?php esc_html_e( 'Tell us about your dream safari', 'scs-core' ); ?></h3>
+				<p><?php esc_html_e( 'Share what you’d love to see, when you’d like to go, and who’s coming. We’ll help you find the right route.', 'scs-core' ); ?></p>
+				<?php echo action_link( $enquiry_url, __( 'Enquire now', 'scs-core' ), 'scs-button scs-button--reverse scs-card__action', 'home-dream-safari' ); ?>
+			</div>
+		</li>
+		<?php
+	endif;
 	echo '</ul>';
 }
 

@@ -1,7 +1,7 @@
 /*
 Theme Name: Savannah Crest
 Description: WordPress block theme for Savannah Crest Safaris.
-Version: 0.3.5
+Version: 0.3.6
 Requires at least: 6.4
 Requires PHP: 7.4
 Text Domain: savannah-crest
@@ -272,19 +272,31 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 .scs-message { border-block: 1px solid var(--scs-line); padding-block: 1.6rem; }
 
 .scs-card-grid, .scs-term-grid, .scs-photo-grid { display: grid; gap: clamp(.85rem, 2.4vw, 1.7rem); grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; padding: 0; margin: 1.35rem 0 0; }
-.scs-card { display: flex; }
-.scs-card__link { display: flex; flex-direction: column; width: 100%; background: var(--scs-paper); border: 1px solid var(--scs-line); text-decoration: none; }
-.scs-card__link:hover h3 { text-decoration: underline; text-decoration-thickness: 1px; }
-.scs-card__image { aspect-ratio: 4/3; background: var(--scs-sand); }
-.scs-card__image img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.scs-card__body { display: flex; flex: 1; flex-direction: column; gap: .55rem; padding: clamp(.85rem, 2.4vw, 1.6rem); }
+.scs-card { display: flex; min-inline-size: 0; }
+.scs-card__link { display: flex; flex-direction: column; inline-size: 100%; color: var(--scs-espresso); background: var(--scs-paper); border: 1px solid var(--scs-line); text-decoration: none; }
+.scs-card__link:is(:hover, :focus-visible) .scs-card__action { color: var(--scs-cream); background: var(--scs-espresso); }
+.scs-card__image { position: relative; flex: none; aspect-ratio: 3 / 2; overflow: hidden; background: var(--scs-sand); }
+.scs-card__image img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+.scs-card__duration { position: absolute; inset: .75rem auto auto .75rem; padding: .32rem .65rem; color: var(--scs-espresso); background: var(--scs-cream); font-size: .76rem; font-weight: 600; }
+.scs-card__body { display: flex; flex: 1; flex-direction: column; gap: .6rem; padding: clamp(1rem, 2.15vw, 1.55rem); }
 .scs-card__body > *, .scs-price, .scs-rate-note { margin: 0; }
+.scs-card .scs-card__body h3 { margin: 0; font-size: clamp(1.25rem, 1.75vw, 1.55rem); line-height: 1.22; overflow-wrap: anywhere; }
 .scs-card__meta, .scs-eyeline { font-size: .84rem; font-weight: 620; color: var(--scs-muted); }
-.scs-card__price { border-top: 1px solid var(--scs-line); padding-block-start: .64rem; display: flex; justify-content: space-between; gap: .45rem; margin-block-start: auto; }
-:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child { grid-column: 1 / -1; }
-:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child .scs-card__body { justify-content: center; padding: clamp(1.1rem, 3.5vw, 3rem); }
-:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child h3 { font-size: clamp(1.85rem, 4vw, 3rem); }
-:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child .scs-card__price { margin-block-start: .55rem; }
+.scs-card__overview { color: var(--scs-muted); font-size: .92rem; line-height: 1.6; }
+.scs-card__footer { display: grid; justify-items: start; gap: .75rem; margin-block-start: auto; padding-block-start: .7rem; }
+.scs-card__price { inline-size: 100%; margin: 0; padding-block-start: .75rem; border-block-start: 1px solid var(--scs-line); font-size: .86rem; font-weight: 600; line-height: 1.45; }
+.scs-card__action { max-inline-size: 100%; }
+.scs-featured-safaris .scs-section-head { align-items: flex-end; }
+.scs-featured-safaris__intro { max-inline-size: 42rem; }
+.scs-featured-safaris__intro p { max-inline-size: 53ch; margin-block: 0; color: var(--scs-muted); }
+.scs-featured-safaris .scs-text-link { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--scs-espresso); }
+.scs-featured-safaris .scs-text-link:hover { color: var(--scs-muted); }
+.scs-card--dream { flex-direction: column; color: var(--scs-cream); background: var(--scs-espresso); border: 1px solid var(--scs-espresso); }
+.scs-card--dream .scs-card__image { background: var(--scs-sand) url("assets/images/menu-plains.webp") center / cover no-repeat; }
+.scs-card--dream .scs-card__body { gap: .85rem; }
+.scs-card--dream .scs-card__body h3 { color: var(--scs-cream); font-size: clamp(1.55rem, 2.4vw, 2rem); text-wrap: balance; }
+.scs-card--dream .scs-card__body p { max-inline-size: 33ch; color: var(--scs-sand); font-size: .92rem; line-height: 1.6; }
+.scs-card--dream .scs-card__action { align-self: flex-start; margin-block-start: auto; }
 .scs-term-grid a, .scs-reading-list a { display: block; border-bottom: 1px solid var(--scs-line); text-decoration: none; }
 .scs-term-grid a:hover, .scs-reading-list a:hover { text-decoration: underline; }
 .scs-term-grid img, .scs-photo-grid img { aspect-ratio: 4/3; width: 100%; object-fit: cover; display: block; }
@@ -398,15 +410,15 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 	.scs-primary-nav { margin-inline-start: auto; }
 	.scs-header-inner--quiet { justify-content: space-between; }
 }
+@media (max-width: 900px) {
+	.scs-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 780px) {
-	.scs-card-grid, .scs-term-grid, .scs-photo-grid, .scs-guides-query .wp-block-post-template.is-layout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.scs-term-grid, .scs-photo-grid, .scs-guides-query .wp-block-post-template.is-layout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	.scs-footer-inner { grid-template-columns: 1fr 1fr; }
 	.scs-footer-brand { grid-column: 1 / -1; }
 }
 @media (min-width: 701px) {
-	:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child .scs-card__link:has(.scs-card__image) { display: grid; grid-template-columns: minmax(0, 1.13fr) minmax(0, 1fr); }
-	:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child .scs-card__image { position: relative; min-height: 18rem; aspect-ratio: auto; }
-	:is(.scs-featured-safaris, .scs-catalogue) .scs-card:only-child .scs-card__image img { position: absolute; inset: 0; }
 	.scs-home-destinations .scs-term-grid li:only-child img { aspect-ratio: 2.65; }
 	.scs-itinerary-hero__summary:has(> p) { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
 	.scs-itinerary-hero__summary:has(> p) > .scs-itinerary-hero__details { border-inline-start: 1px solid var(--scs-line); padding-inline-start: clamp(1rem, 3.2vw, 3.3rem); }
