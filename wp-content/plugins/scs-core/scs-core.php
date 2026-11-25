@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Savannah Crest Core
  * Description: Safari content, catalogue, itinerary blocks and planner integration.
- * Version: 0.2.0
+ * Version: 0.2.1
  * Requires at least: 6.4
  * Requires PHP: 7.4
  * Text Domain: scs-core
@@ -12,7 +12,7 @@ namespace SavannahCrest\Core;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION = '0.2.0';
+const VERSION = '0.2.1';
 const FILE    = __FILE__;
 const DIR     = __DIR__;
 
@@ -55,7 +55,7 @@ add_action( 'wp_enqueue_scripts', static function (): void {
 	$dependencies = is_page( array( PLANNER_SLUG, ENQUIRY_SLUG ) ) ? array( 'jquery' ) : array();
 	wp_enqueue_script( 'scs-events', plugins_url( 'assets/events.js', FILE ), $dependencies, VERSION, true );
 	if ( is_page( array( PLANNER_SLUG, ENQUIRY_SLUG ) ) ) {
-		wp_enqueue_script( 'scs-form-flow', plugins_url( 'assets/form-flow.js', FILE ), array(), VERSION, true );
+		wp_enqueue_script( 'scs-form-flow', plugins_url( 'assets/form-flow.js', FILE ), array( 'jquery-ui-datepicker' ), VERSION, true );
 	}
 	if ( is_page( ENQUIRY_SLUG ) ) {
 		wp_enqueue_script( 'scs-enquiry', plugins_url( 'assets/enquiry.js', FILE ), array(), VERSION, true );

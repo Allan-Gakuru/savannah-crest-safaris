@@ -1,7 +1,7 @@
 /*
 Theme Name: Savannah Crest
 Description: WordPress block theme for Savannah Crest Safaris.
-Version: 0.3.7
+Version: 0.3.8
 Requires at least: 6.4
 Requires PHP: 7.4
 Text Domain: savannah-crest
@@ -399,6 +399,105 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 .forminator-calendar { font-family: var(--scs-font) !important; }
 #enquiry-details .forminator-ui.forminator-custom-form .forminator-button-submit { background: var(--scs-espresso); color: var(--scs-paper); min-height: 44px; }
 #enquiry-details .forminator-ui.forminator-custom-form .forminator-button-submit:hover { background: #422b20; color: var(--scs-paper); }
+
+[data-scs-planner] .forminator-label .scs-question-optional { color: var(--scs-muted); font-size: .7em; font-weight: 400; white-space: nowrap; }
+[data-scs-planner] .forminator-ui label:is(.forminator-radio, .forminator-checkbox) {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	box-sizing: border-box;
+	min-height: 44px;
+	cursor: pointer;
+}
+[data-scs-planner] .forminator-ui label:is(.forminator-radio, .forminator-checkbox):is(:hover, :focus-within, :has(input:checked)) {
+	border-color: var(--scs-muted) !important;
+	background: var(--scs-cream) !important;
+}
+[data-scs-planner] .forminator-ui label:is(.forminator-radio, .forminator-checkbox):focus-within {
+	outline: 2px solid var(--scs-espresso);
+	outline-offset: 2px;
+}
+
+[data-scs-planner] .forminator-datepicker[hidden],
+[data-scs-planner] .scs-date-picker[hidden] { display: none !important; }
+[data-scs-planner] .forminator-field:has(.forminator-datepicker) > .forminator-description { display: block; }
+.scs-date-picker { width: min(100%, 25rem); margin-block: .75rem 0; font-family: var(--scs-font); }
+.scs-date-calendar .ui-datepicker-inline {
+	width: auto;
+	box-sizing: border-box;
+	padding: .5rem;
+	border: 1px solid var(--scs-line);
+	border-radius: .55rem;
+	background: var(--scs-paper);
+	color: var(--scs-espresso);
+}
+.scs-date-calendar .ui-datepicker-header {
+	display: grid;
+	grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem;
+	align-items: center;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: inherit;
+}
+.scs-date-calendar .ui-datepicker-title { grid-area: 1 / 2; display: flex; justify-content: center; gap: .35rem; margin: 0; font-size: .95rem; font-weight: 600; }
+.scs-date-calendar .ui-datepicker-title select {
+	width: auto;
+	max-width: 58%;
+	min-height: 34px;
+	padding-inline: .25rem;
+	border: 1px solid var(--scs-line);
+	border-radius: .3rem;
+	background: var(--scs-paper);
+	font: inherit;
+	color: inherit;
+}
+.scs-date-calendar :is(.ui-datepicker-prev, .ui-datepicker-next) {
+	position: static;
+	display: grid;
+	place-items: center;
+	width: auto;
+	height: 2.75rem;
+	border: 0;
+	border-radius: .3rem;
+	color: inherit;
+	cursor: pointer;
+}
+.scs-date-calendar .ui-datepicker-prev { grid-area: 1 / 1; }
+.scs-date-calendar .ui-datepicker-next { grid-area: 1 / 3; }
+.scs-date-calendar :is(.ui-datepicker-prev, .ui-datepicker-next) .ui-icon { display: none; }
+.scs-date-calendar :is(.ui-datepicker-prev, .ui-datepicker-next)::before {
+	content: "";
+	width: .45rem;
+	height: .45rem;
+	border: solid currentColor;
+	border-width: 0 2px 2px 0;
+	transform: rotate(-45deg);
+}
+.scs-date-calendar .ui-datepicker-prev::before { transform: rotate(135deg); }
+.scs-date-calendar .ui-datepicker-calendar { width: 100%; margin: 0; table-layout: fixed; border-collapse: collapse; }
+.scs-date-calendar .ui-datepicker-calendar th { padding: .35rem 0; color: var(--scs-muted); font-size: .72rem; text-align: center; }
+.scs-date-calendar .ui-datepicker-calendar td { padding: 1px; text-align: center; }
+.scs-date-calendar .ui-datepicker-calendar .ui-state-default {
+	display: grid;
+	place-items: center;
+	min-height: 2.5rem;
+	padding: 0;
+	border: 0;
+	border-radius: .3rem;
+	background: transparent;
+	color: inherit;
+	font-size: .875rem;
+	text-align: center;
+	text-decoration: none;
+}
+.scs-date-calendar .ui-state-disabled { opacity: .48; cursor: default; }
+.scs-date-calendar a:focus-visible { outline: 2px solid var(--scs-espresso); outline-offset: -2px; }
+.scs-date-calendar a:not(.ui-state-disabled):hover { background: var(--scs-cream); }
+.scs-date-calendar .ui-datepicker-today .ui-state-default { box-shadow: inset 0 0 0 1px var(--scs-gold); }
+.scs-date-calendar--answered .ui-datepicker-current-day a.ui-state-default { background: var(--scs-espresso); color: var(--scs-paper); outline-color: var(--scs-paper); }
+.scs-date-clear { min-height: 44px; padding: 0 .25rem; border: 0; background: transparent; color: var(--scs-espresso); font-size: .84rem; text-decoration: underline; cursor: pointer; }
+.scs-date-clear:disabled { visibility: hidden; }
 
 .scs-site-footer { color: var(--scs-cream); background: var(--scs-espresso); margin-block-start: 0; }
 .scs-footer-shell { padding-block: clamp(2.5rem, 5vw, 4.75rem) 1.5rem; }

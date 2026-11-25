@@ -11,6 +11,7 @@ const TRAVEL_DATE_FIELD = 'text-3';
 const FORMINATOR_FORM_META = 'forminator_form_meta';
 
 add_filter( 'get_post_metadata', __NAMESPACE__ . '\tailor_planner_form', 10, 4 );
+add_filter( 'forminator_field_markup', __NAMESPACE__ . '\planner_field_markup', 10, 3 );
 
 function safari_priority_choices( array $trip ): array {
 	$id = (int) $trip['id'];
@@ -39,17 +40,6 @@ function safari_priority_choices( array $trip ): array {
 		$choices = array_slice( $choices, 0, 5 );
 	}
 	return array_merge( $choices, array( $help ) );
-}
-
-function safari_experience_choices( array $trip ): array {
-	$routes = require __DIR__ . '/../content/safari-experiences.php';
-	if ( isset( $routes[ $trip['slug'] ] ) ) {
-		return $routes[ $trip['slug'] ];
-	}
-	$experiences = wp_get_post_terms( (int) $trip['id'], EXPERIENCE, array( 'fields' => 'names' ) );
-	return ! is_wp_error( $experiences ) && $experiences
-		? $experiences
-		: array( __( 'I’d like suggestions for this itinerary', 'scs-core' ) );
 }
 
 function planner_choice_options( array $labels ): array {
@@ -97,7 +87,7 @@ function tailor_planner_form( $value, int $form_id, string $key, bool $single ) 
 		return $value;
 	}
 
-	$meta['fields'] = planner_date_picker( $meta['fields'] );
+	$meta['fields'] = planner_question_fields( $meta['fields'] );
 	$trip = planner_form_trip( $form_id );
 	if ( $trip ) {
 		$meta['fields'] = trip_form_fields( $meta['fields'], $trip );
@@ -105,27 +95,63 @@ function tailor_planner_form( $value, int $form_id, string $key, bool $single ) 
 	return array( $meta );
 }
 
-function planner_date_picker( array $fields ): array {
+function planner_question_fields( array $fields ): array {
 	foreach ( $fields as $index => $field ) {
-		if ( TRAVEL_DATE_FIELD !== ( $field['id'] ?? '' ) || 'text' !== ( $field['type'] ?? '' ) ) {
-			continue;
+		$id = $field['id'] ?? '';
+		$type = $field['type'] ?? '';
+		if ( 'email-1' === $id && 'email' === $type ) {
+			$fields[ $index ]['field_label'] = __( 'What is your best email?', 'scs-core' );
 		}
-		// Keep the existing field ID so entries and notification merge fields stay compatible.
-		$fields[ $index ] = array_replace( $field, array(
-			'type'             => 'date',
-			'field_type'       => 'picker',
-			'date_format'      => 'yy-mm-dd',
-			'default_date'     => 'none',
-			'icon'             => 'true',
-			'start-date'       => 'today',
-			'required'         => false,
-			'placeholder'      => __( 'Select a date', 'scs-core' ),
-			'description'      => __( 'Choose your preferred start date. Leave it blank if your dates are flexible.', 'scs-core' ),
-			'restrict_message' => __( 'Choose today or a future date.', 'scs-core' ),
-		) );
-		break;
+		if ( 'text-1' === $id && 'text' === $type ) {
+			$fields[ $index ]['description'] = __( 'Enter their ages separated by commas, for example, 6, 12.', 'scs-core' );
+			$fields[ $index ]['placeholder'] = __( '6, 12', 'scs-core' );
+		}
+		if ( 'phone-1' === $id && 'phone' === $type && 'Optional. Add your country code if you’d like a call.' === ( $field['description'] ?? '' ) ) {
+			$fields[ $index ]['description'] = __( 'Add your country code if you’d like a call.', 'scs-core' );
+		}
+		if ( 'textarea-1' === $id && 'textarea' === $type && 'Optional. We’ll use your answers to respond to your enquiry.' === ( $field['description'] ?? '' ) ) {
+			$fields[ $index ]['description'] = __( 'We’ll use your answers to respond to your enquiry.', 'scs-core' );
+		}
+		if ( TRAVEL_DATE_FIELD === $id && 'text' === $type ) {
+			// Keep the field ID for entries and notification merge fields.
+			$fields[ $index ] = array_replace( $field, array(
+				'type'             => 'date',
+				'field_type'       => 'picker',
+				'date_format'      => 'yy-mm-dd',
+				'default_date'     => 'none',
+				'icon'             => 'false',
+				'start-date'       => 'today',
+				'required'         => false,
+				'placeholder'      => __( 'Select a date', 'scs-core' ),
+				'description'      => __( 'Choose your preferred start date. Leave it blank if your dates are flexible.', 'scs-core' ),
+				'restrict_message' => __( 'Choose today or a future date.', 'scs-core' ),
+			) );
+		}
 	}
 	return $fields;
+}
+
+function planner_field_markup( string $html, array $field, $renderer ): string {
+	$config = configured_form();
+	if ( empty( $config['id'] ) || (int) ( $renderer->model->id ?? 0 ) !== $config['id'] ||
+		! is_page( array( PLANNER_SLUG, ENQUIRY_SLUG ) ) ) {
+		return $html;
+	}
+	if ( ! empty( $field['field_label'] ) && ! filter_var( $field['required'] ?? false, FILTER_VALIDATE_BOOLEAN ) ) {
+		$html = preg_replace_callback(
+			'~(<(label|span|legend)\b[^>]*\bclass="[^"]*\bforminator-label\b[^"]*"[^>]*>.*?)(</\2>)~s',
+			static function ( array $label ): string {
+				return $label[1] . ' <em class="scs-question-optional">' . esc_html__( '(optional)', 'scs-core' ) . '</em>' . $label[3];
+			},
+			$html,
+			1
+		) ?? $html;
+	}
+	if ( TRAVEL_DATE_FIELD === ( $field['element_id'] ?? '' ) && 'date' === ( $field['type'] ?? '' ) ) {
+		$html .= '<div class="scs-date-picker" hidden><div class="scs-date-calendar"></div>' .
+			'<button class="scs-date-clear" type="button">' . esc_html__( 'Clear date', 'scs-core' ) . '</button></div>';
+	}
+	return $html;
 }
 
 function trip_form_fields( array $fields, array $trip ): array {
@@ -139,26 +165,22 @@ function trip_form_fields( array $fields, array $trip ): array {
 		$priority = array_search( TRIP_PRIORITY_FIELD, $field_ids, true );
 		$fields[ $priority ]['options'] = planner_choice_options( safari_priority_choices( $trip ) );
 	}
-	if ( 'checkbox' === ( $types[ TRIP_EXPERIENCE_FIELD ] ?? '' ) ) {
-		$experience = array_search( TRIP_EXPERIENCE_FIELD, $field_ids, true );
-		$fields[ $experience ]['options'] = planner_choice_options( safari_experience_choices( $trip ) );
-	}
-
 	$page_start = array_search( TRIP_DESTINATION_BREAK, $field_ids, true );
-	if ( false === $page_start || 'page-break' !== $types[ TRIP_DESTINATION_BREAK ] ) {
-		return $fields;
+	if ( false !== $page_start && 'page-break' === $types[ TRIP_DESTINATION_BREAK ] ) {
+		$page = array_slice( $types, $page_start + 1, null, true );
+		$page_end = array_search( 'page-break', array_values( $page ), true );
+		$page = false === $page_end ? array() : array_slice( $page, 0, $page_end, true );
+		ksort( $page );
+		if ( TRIP_DESTINATION_FIELDS === $page ) {
+			// Forminator stores each page's progress label on its closing break.
+			array_splice( $fields, $page_start + 1, count( $page ) + 1 );
+		}
 	}
-	// The destination page starts at this break and ends at the next one.
-	$page = array_slice( $types, $page_start + 1, null, true );
-	$page_end = array_search( 'page-break', array_values( $page ), true );
-	if ( false === $page_end ) {
-		return $fields;
+	if ( 'checkbox' === ( $types[ TRIP_EXPERIENCE_FIELD ] ?? '' ) ) {
+		$experience = array_search( TRIP_EXPERIENCE_FIELD, array_column( $fields, 'id' ), true );
+		$only_question = 'page-break' === ( $fields[ $experience - 1 ]['type'] ?? '' ) &&
+			'page-break' === ( $fields[ $experience + 1 ]['type'] ?? '' );
+		array_splice( $fields, $experience, $only_question ? 2 : 1 );
 	}
-	$page = array_slice( $page, 0, $page_end, true );
-	ksort( $page );
-	if ( TRIP_DESTINATION_FIELDS !== $page ) {
-		return $fields;
-	}
-	array_splice( $fields, $page_start, count( $page ) + 1 );
 	return $fields;
 }

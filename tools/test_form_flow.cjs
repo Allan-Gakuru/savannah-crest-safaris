@@ -31,8 +31,10 @@ function fixture() {
 	function input(type, name, isVisible = true) {
 		const field = Object.assign(new Input(), {
 			type, name, checked: true, disabled: false,
+			matches: () => !['hidden', 'submit', 'button'].includes(type),
 			closest: (selector) => ({
 				'form.forminator-custom-form': form,
+				'[data-scs-planner] form.forminator-custom-form': form,
 				'.forminator-pagination': step,
 				'.forminator-field': { getClientRects: () => isVisible ? [1] : [] }
 			})[selector]
@@ -43,6 +45,12 @@ function fixture() {
 	return { next, step, form, input, clicks: () => clicks };
 }
 function change(field) { listeners.change({ target: field }); }
+function enter(field, overrides = {}) {
+	const event = { key: 'Enter', target: field, defaultPrevented: false,
+		preventDefault() { this.defaultPrevented = true; }, ...overrides };
+	listeners.keydown(event);
+	return event.defaultPrevented;
+}
 
 {
 	const f = fixture();
@@ -107,4 +115,21 @@ function change(field) { listeners.change({ target: field }); }
 	change(selected); flush();
 	assert.equal(f.clicks(), 0, 'a disabled Next control is respected');
 }
-console.log('Form auto-advance regression checks passed.');
+{
+	const f = fixture();
+	const field = f.input('email', 'email-1');
+	assert.equal(enter(field), true, 'Enter overrides implicit form submission when Next is available');
+	assert.equal(f.clicks(), 1, 'Enter clicks the same Next button as a pointer');
+	assert.equal(enter(field, { repeat: true }), true, 'holding Enter suppresses the browser default');
+	assert.equal(f.clicks(), 1, 'holding Enter cannot skip steps');
+}
+{
+	const f = fixture();
+	const field = f.input('text', 'text-1');
+	assert.equal(enter(field, { isComposing: true }), false, 'Enter can finish text composition');
+	assert.equal(enter(field, { shiftKey: true }), false, 'modified Enter retains its native behavior');
+	f.next.classList.contains = () => true;
+	assert.equal(enter(field), false, 'Enter does not click a hidden Next button');
+	assert.equal(f.clicks(), 0);
+}
+console.log('Form keyboard and auto-advance regression checks passed.');

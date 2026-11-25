@@ -177,6 +177,9 @@ function wp_get_post_terms( $id, $taxonomy, $args ) {
 function esc_html( $value ) {
 	return htmlspecialchars( $value, ENT_QUOTES, 'UTF-8', false );
 }
+function esc_html__( $value, $domain ) {
+	return esc_html( $value );
+}
 
 $plugin = dirname( __DIR__ ) . '/wp-content/plugins/scs-core/src/';
 require $plugin . 'content.php';
@@ -198,7 +201,7 @@ use function SavannahCrest\Core\parse_filters;
 use function SavannahCrest\Core\planner_entry_context;
 use function SavannahCrest\Core\price_label;
 use function SavannahCrest\Core\publication_errors;
-use function SavannahCrest\Core\safari_experience_choices;
+use function SavannahCrest\Core\planner_field_markup;
 use function SavannahCrest\Core\safari_priority_choices;
 use function SavannahCrest\Core\tailor_planner_form;
 use function SavannahCrest\Core\valid_rate_date;
@@ -344,7 +347,7 @@ check( array_column( planner_entry_context( $entry, 77 ), 'value', 'name' )['hid
 function planner_test_form_meta( bool $extra_question = false ): array {
 	$schema = array(
 		'radio-1' => 'radio', 'page-break-1' => 'page-break', 'number-1' => 'number',
-		'page-break-2' => 'page-break', 'number-2' => 'number', 'page-break-3' => 'page-break', 'radio-2' => 'radio',
+		'page-break-2' => 'page-break', 'number-2' => 'number', 'text-1' => 'text', 'page-break-3' => 'page-break', 'radio-2' => 'radio',
 		'page-break-4' => 'page-break', 'checkbox-1' => 'checkbox',
 		'page-break-5' => 'page-break', 'checkbox-2' => 'checkbox', 'text-2' => 'text',
 	);
@@ -360,6 +363,10 @@ function planner_test_form_meta( bool $extra_question = false ): array {
 	$fields['radio-2']['options'] = array( array( 'label' => 'Wildlife', 'value' => 'wildlife' ) );
 	$fields['checkbox-1']['required'] = false;
 	$fields['checkbox-1']['options'] = array( array( 'label' => 'Walking safaris', 'value' => 'walking' ) );
+	$fields['checkbox-1']['field_label'] = 'Which experiences interest you?';
+	$fields['text-1']['conditions'] = array( array( 'element_id' => 'number-2', 'rule' => 'is_great', 'value' => '0' ) );
+	$fields['email-1']['field_label'] = 'Where should we email your safari ideas?';
+	$fields['email-1']['required'] = 'true';
 	$fields['text-3']['field_label'] = 'When would you like to travel?';
 	$fields['text-3']['required'] = 'true';
 	$fields['page-break-1']['conditions'] = array( array( 'element_id' => 'radio-1', 'value' => 'solo' ) );
@@ -387,7 +394,21 @@ check( $date_field['start-date'], 'today', 'Travel dates are restricted from tod
 check( $date_field['required'], false, 'Travellers with flexible plans can leave the date blank' );
 check( $date_field['default_date'], 'none', 'Travel dates are blank until selected' );
 check( $date_field['field_label'], $general_fields['text-3']['field_label'], 'The travel date question keeps its label' );
-check( array_diff_key( $enquiry_fields, array( 'text-3' => true ) ), array_diff_key( $general_fields, array( 'text-3' => true ) ), 'The general enquiry keeps its other questions' );
+check( $enquiry_fields['email-1']['field_label'], 'What is your best email?', 'The public email question uses the requested wording' );
+check( $enquiry_fields['email-1']['required'], 'true', 'The email question remains required' );
+check( str_contains( $enquiry_fields['text-1']['description'], 'separated by commas' ), true, 'The ages question explains the expected format' );
+check( $enquiry_fields['text-1']['conditions'], $general_fields['text-1']['conditions'], 'The ages question stays conditional' );
+$changed_fields = array_fill_keys( array( 'text-1', 'text-3', 'email-1' ), true );
+check( array_diff_key( $enquiry_fields, $changed_fields ), array_diff_key( $general_fields, $changed_fields ), 'The general enquiry keeps its experience and destination choices' );
+
+$renderer = (object) array( 'model' => (object) array( 'id' => 77 ) );
+$date_markup = planner_field_markup( '<div><label for="travel" class="forminator-label">Travel?</label><input id="travel"></div>', $date_field + array( 'element_id' => 'text-3' ), $renderer );
+check( str_contains( $date_markup, 'Travel? <em class="scs-question-optional">(optional)</em></label>' ), true, 'Optional text is italicized inside the question label' );
+check( str_contains( $date_markup, '<div class="scs-date-picker" hidden><div class="scs-date-calendar">'), true, 'The date field has a calendar container and a fallback input' );
+$checklist_label = '<span class="forminator-label">Experiences?</span>';
+check( planner_field_markup( $checklist_label, $enquiry_fields['checkbox-1'], $renderer ), '<span class="forminator-label">Experiences? <em class="scs-question-optional">(optional)</em></span>', 'Optional choice groups also include the marker' );
+$required_label = '<label class="forminator-label">What is your best email?</label>';
+check( planner_field_markup( $required_label, $enquiry_fields['email-1'], $renderer ), $required_label, 'Required questions have no optional marker' );
 
 $GLOBALS['planner_test_page'] = 'plan-your-safari';
 $tour = tailor_planner_form( null, 77, 'forminator_form_meta', true )[0];
@@ -397,12 +418,10 @@ $priority = $tour_fields['radio-2'];
 $amboseli_choices = array_column( $priority['options'], 'value' );
 check( $amboseli_choices, array( 'More time watching elephants', 'Wildlife photography', 'A Maasai community visit', 'I’d like your advice' ), 'Tour links show the matching trip priorities' );
 check( $priority['required'], true, 'The tailored priority question stays required' );
-check( array_column( $tour_fields['checkbox-1']['options'], 'value' ), array( 'Game drives in Amboseli', 'Elephant watching', 'Photographing Kilimanjaro when skies are clear', 'Maasai village visit' ), 'The optional checklist offers specific activities from Amboseli' );
-check( $tour_fields['checkbox-1']['required'], false, 'The tailored experience question stays optional' );
 check(
 	array_column( $tour['fields'], 'id' ),
-	array( 'radio-1', 'page-break-1', 'number-1', 'page-break-2', 'number-2', 'page-break-3', 'radio-2', 'page-break-4', 'checkbox-1', 'page-break-6', 'text-3', 'page-break-7', 'email-1' ),
-	'Remove exactly the destination page and its questions'
+	array( 'radio-1', 'page-break-1', 'number-1', 'page-break-2', 'number-2', 'text-1', 'page-break-3', 'radio-2', 'page-break-4', 'text-3', 'page-break-7', 'email-1' ),
+	'Remove the experiences and destinations along with their closing breaks'
 );
 check( $tour['fields'][1], $general['fields'][1], 'The solo skip rule stays intact' );
 check( $tour['settings'], $general['settings'], 'Tailoring leaves Forminator settings intact' );
@@ -418,24 +437,20 @@ $submitted = tailor_planner_form( null, 77, 'forminator_form_meta', true )[0];
 $submitted_fields = array_column( $submitted['fields'], null, 'id' );
 check( $submitted_fields['text-3'], $date_field, 'Tour AJAX submissions validate against the same date picker' );
 $rwanda_choices = array_column( $submitted_fields['radio-2']['options'], 'value' );
-$rwanda_experiences = array_column( $submitted_fields['checkbox-1']['options'], 'value' );
 check( in_array( 'Golden monkey trekking', $rwanda_choices, true ), true, 'AJAX validation gets the options for the submitted itinerary' );
 check( array_intersect( $amboseli_choices, $rwanda_choices ), array( 3 => 'I’d like your advice' ), 'Different itineraries offer different choices' );
-check( $rwanda_experiences, array( 'Mountain gorilla trekking', 'Golden monkey trekking', 'Visiting the Kigali Genocide Memorial' ), 'AJAX validation gets Rwanda’s experience choices' );
-$selected_experiences = array_slice( $rwanda_experiences, 0, 2 );
+check( isset( $submitted_fields['checkbox-1'] ), false, 'Tour submissions also omit the experience field' );
 $entry = array(
 	array( 'name' => 'radio-2', 'value' => $rwanda_choices[1] ),
-	array( 'name' => 'checkbox-1', 'value' => $selected_experiences ),
 );
 $saved = array_column( planner_entry_context( $entry, 77 ), 'value', 'name' );
 check( $saved['radio-2'], 'Golden monkey trekking', 'The saved entry retains the selected text' );
-check( $saved['checkbox-1'], $selected_experiences, 'The saved entry retains both selected experiences' );
 check( $saved['hidden-3'], 'Rwanda Gorilla and Golden Monkey Trekking Safari', 'The form saves the authoritative tour title' );
 
 $changed = planner_test_form_meta( true );
 $GLOBALS['planner_test_form_meta'][77]['forminator_form_meta'][0] = serialize( $changed );
 $tailored = tailor_planner_form( null, 77, 'forminator_form_meta', true )[0];
-check( array_column( $tailored['fields'], 'id' ), array_column( $changed['fields'], 'id' ), 'Preserve a destination page if an editor added an unrelated question' );
+check( array_column( $tailored['fields'], 'id' ), array_values( array_diff( array_column( $changed['fields'], 'id' ), array( 'checkbox-1', 'page-break-5' ) ) ), 'Preserve a destination page if an editor added an unrelated question' );
 
 foreach ( array( 'trip:internal-draft', 'trip:unknown', array( 'trip:' . $amboseli ) ) as $token ) {
 	$_POST['_scs_planner_context'] = $token;
@@ -449,9 +464,7 @@ $trip_data = context_from_query( array( 'trip' => $amboseli ) );
 $GLOBALS['planner_test_fields'][91]['scs_enquiry_priorities'] = "A private &lt;b&gt;photography&lt;/b&gt; drive\r\n\r\nA private photography drive\nBush breakfast\nI’d like your advice";
 check( safari_priority_choices( $trip_data ), array( 'A private photography drive', 'Bush breakfast', 'I’d like your advice' ), 'The editor can replace the suggestions with distinct plain text choices' );
 $new_trip = context_from_query( array( 'trip' => 'approved' ) );
-check( safari_experience_choices( $new_trip ), array( 'I’d like suggestions for this itinerary' ), 'An itinerary without tags still offers a relevant option' );
 $GLOBALS['planner_test_experiences'][8] = array( 'slugs' => array( 'walking-cycling' ), 'names' => array( 'Walking and cycling' ) );
-check( safari_experience_choices( $new_trip ), array( 'Walking and cycling' ), 'New itineraries use their assigned experiences' );
 check( safari_priority_choices( $new_trip )[0], 'More time walking or cycling', 'New itineraries get priorities based on their experiences' );
 
 $GLOBALS['enquiry_insert_attempts'] = 0;
