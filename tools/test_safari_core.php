@@ -160,7 +160,7 @@ function sanitize_text_field( $value ) {
 	return trim( strip_tags( $value ) );
 }
 function is_page( $slug ) {
-	return $slug === ( $GLOBALS['planner_test_page'] ?? '' );
+	return in_array( $GLOBALS['planner_test_page'] ?? '', (array) $slug, true );
 }
 function get_field( $name, $id ) {
 	return $GLOBALS['planner_test_fields'][ $id ][ $name ] ?? false;
@@ -351,7 +351,7 @@ function planner_test_form_meta( bool $extra_question = false ): array {
 	if ( $extra_question ) {
 		$schema['text-99'] = 'text';
 	}
-	$schema += array( 'page-break-6' => 'page-break', 'date-1' => 'date', 'email-1' => 'email' );
+	$schema += array( 'page-break-6' => 'page-break', 'text-3' => 'text', 'page-break-7' => 'page-break', 'email-1' => 'email' );
 	$fields = array();
 	foreach ( $schema as $id => $type ) {
 		$fields[ $id ] = array( 'id' => $id, 'type' => $type );
@@ -360,6 +360,8 @@ function planner_test_form_meta( bool $extra_question = false ): array {
 	$fields['radio-2']['options'] = array( array( 'label' => 'Wildlife', 'value' => 'wildlife' ) );
 	$fields['checkbox-1']['required'] = false;
 	$fields['checkbox-1']['options'] = array( array( 'label' => 'Walking safaris', 'value' => 'walking' ) );
+	$fields['text-3']['field_label'] = 'When would you like to travel?';
+	$fields['text-3']['required'] = 'true';
 	$fields['page-break-1']['conditions'] = array( array( 'element_id' => 'radio-1', 'value' => 'solo' ) );
 	return array( 'fields' => array_values( $fields ), 'settings' => array( 'pagination' => 'show' ) );
 }
@@ -375,11 +377,22 @@ $GLOBALS['planner_test_form_meta'][77] = array( 'forminator_form_meta' => array(
 $_POST = array();
 $_GET = array( 'trip' => $amboseli );
 $GLOBALS['planner_test_page'] = 'enquire';
-check( tailor_planner_form( null, 77, 'forminator_form_meta', true ), null, 'The general enquiry uses the original form' );
+$enquiry = tailor_planner_form( null, 77, 'forminator_form_meta', true )[0];
+$enquiry_fields = array_column( $enquiry['fields'], null, 'id' );
+$general_fields = array_column( $general['fields'], null, 'id' );
+$date_field = $enquiry_fields['text-3'];
+check( $date_field['type'], 'date', 'The general enquiry uses the Forminator date field' );
+check( $date_field['field_type'], 'picker', 'The Travel dates question displays a calendar' );
+check( $date_field['start-date'], 'today', 'Travel dates are restricted from today onward' );
+check( $date_field['required'], false, 'Travellers with flexible plans can leave the date blank' );
+check( $date_field['default_date'], 'none', 'Travel dates are blank until selected' );
+check( $date_field['field_label'], $general_fields['text-3']['field_label'], 'The travel date question keeps its label' );
+check( array_diff_key( $enquiry_fields, array( 'text-3' => true ) ), array_diff_key( $general_fields, array( 'text-3' => true ) ), 'The general enquiry keeps its other questions' );
 
 $GLOBALS['planner_test_page'] = 'plan-your-safari';
 $tour = tailor_planner_form( null, 77, 'forminator_form_meta', true )[0];
 $tour_fields = array_column( $tour['fields'], null, 'id' );
+check( $tour_fields['text-3'], $date_field, 'Individual tour enquiries use the same date picker' );
 $priority = $tour_fields['radio-2'];
 $amboseli_choices = array_column( $priority['options'], 'value' );
 check( $amboseli_choices, array( 'More time watching elephants', 'Wildlife photography', 'A Maasai community visit', 'I’d like your advice' ), 'Tour links show the matching trip priorities' );
@@ -388,7 +401,7 @@ check( array_column( $tour_fields['checkbox-1']['options'], 'value' ), array( 'G
 check( $tour_fields['checkbox-1']['required'], false, 'The tailored experience question stays optional' );
 check(
 	array_column( $tour['fields'], 'id' ),
-	array( 'radio-1', 'page-break-1', 'number-1', 'page-break-2', 'number-2', 'page-break-3', 'radio-2', 'page-break-4', 'checkbox-1', 'page-break-6', 'date-1', 'email-1' ),
+	array( 'radio-1', 'page-break-1', 'number-1', 'page-break-2', 'number-2', 'page-break-3', 'radio-2', 'page-break-4', 'checkbox-1', 'page-break-6', 'text-3', 'page-break-7', 'email-1' ),
 	'Remove exactly the destination page and its questions'
 );
 check( $tour['fields'][1], $general['fields'][1], 'The solo skip rule stays intact' );
@@ -397,9 +410,13 @@ check( get_post_meta( 77 )['forminator_form_meta'][0], serialize( $general ), 'T
 check( tailor_planner_form( null, 88, 'forminator_form_meta', true ), null, 'Leave unrelated forms untouched' );
 
 $GLOBALS['planner_test_page'] = '';
+check( tailor_planner_form( null, 77, 'forminator_form_meta', true ), null, 'The form editor sees the stored field definitions' );
+$_POST = array( 'action' => 'forminator_submit_form_custom-forms', 'form_id' => '77' );
+check( tailor_planner_form( null, 77, 'forminator_form_meta', true )[0], $enquiry, 'General AJAX submissions validate against the same date picker' );
 $_POST = array( 'action' => 'forminator_submit_form_custom-forms', 'form_id' => '77', '_scs_planner_context' => 'trip:' . $rwanda );
 $submitted = tailor_planner_form( null, 77, 'forminator_form_meta', true )[0];
 $submitted_fields = array_column( $submitted['fields'], null, 'id' );
+check( $submitted_fields['text-3'], $date_field, 'Tour AJAX submissions validate against the same date picker' );
 $rwanda_choices = array_column( $submitted_fields['radio-2']['options'], 'value' );
 $rwanda_experiences = array_column( $submitted_fields['checkbox-1']['options'], 'value' );
 check( in_array( 'Golden monkey trekking', $rwanda_choices, true ), true, 'AJAX validation gets the options for the submitted itinerary' );
@@ -422,7 +439,8 @@ check( array_column( $tailored['fields'], 'id' ), array_column( $changed['fields
 
 foreach ( array( 'trip:internal-draft', 'trip:unknown', array( 'trip:' . $amboseli ) ) as $token ) {
 	$_POST['_scs_planner_context'] = $token;
-	check( tailor_planner_form( null, 77, 'forminator_form_meta', true ), null, 'Invalid tour context keeps the general questions' );
+	$submitted = tailor_planner_form( null, 77, 'forminator_form_meta', true )[0];
+	check( array_column( $submitted['fields'], null, 'id' )['radio-2'], $general_fields['radio-2'], 'Invalid tour context keeps the general questions' );
 }
 $_POST = array();
 $_GET = array();

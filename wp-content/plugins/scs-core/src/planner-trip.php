@@ -7,6 +7,7 @@ const TRIP_PRIORITY_FIELD = 'radio-2';
 const TRIP_EXPERIENCE_FIELD = 'checkbox-1';
 const TRIP_DESTINATION_BREAK = 'page-break-5';
 const TRIP_DESTINATION_FIELDS = array( 'checkbox-2' => 'checkbox', 'text-2' => 'text' );
+const TRAVEL_DATE_FIELD = 'text-3';
 const FORMINATOR_FORM_META = 'forminator_form_meta';
 
 add_filter( 'get_post_metadata', __NAMESPACE__ . '\tailor_planner_form', 10, 4 );
@@ -82,8 +83,9 @@ function tailor_planner_form( $value, int $form_id, string $key, bool $single ) 
 	if ( $form_id !== ( $config['id'] ?? 0 ) ) {
 		return $value;
 	}
-	$trip = planner_form_trip( $form_id );
-	if ( ! $trip ) {
+	$is_submission = 'forminator_submit_form_custom-forms' === ( $_POST['action'] ?? '' ) &&
+		$form_id === positive_int( $_POST['form_id'] ?? null );
+	if ( ! $is_submission && ! is_page( array( PLANNER_SLUG, ENQUIRY_SLUG ) ) ) {
 		return $value;
 	}
 
@@ -95,8 +97,35 @@ function tailor_planner_form( $value, int $form_id, string $key, bool $single ) 
 		return $value;
 	}
 
-	$meta['fields'] = trip_form_fields( $meta['fields'], $trip );
+	$meta['fields'] = planner_date_picker( $meta['fields'] );
+	$trip = planner_form_trip( $form_id );
+	if ( $trip ) {
+		$meta['fields'] = trip_form_fields( $meta['fields'], $trip );
+	}
 	return array( $meta );
+}
+
+function planner_date_picker( array $fields ): array {
+	foreach ( $fields as $index => $field ) {
+		if ( TRAVEL_DATE_FIELD !== ( $field['id'] ?? '' ) || 'text' !== ( $field['type'] ?? '' ) ) {
+			continue;
+		}
+		// Keep the existing field ID so entries and notification merge fields stay compatible.
+		$fields[ $index ] = array_replace( $field, array(
+			'type'             => 'date',
+			'field_type'       => 'picker',
+			'date_format'      => 'yy-mm-dd',
+			'default_date'     => 'none',
+			'icon'             => 'true',
+			'start-date'       => 'today',
+			'required'         => false,
+			'placeholder'      => __( 'Select a date', 'scs-core' ),
+			'description'      => __( 'Choose your preferred start date. Leave it blank if your dates are flexible.', 'scs-core' ),
+			'restrict_message' => __( 'Choose today or a future date.', 'scs-core' ),
+		) );
+		break;
+	}
+	return $fields;
 }
 
 function trip_form_fields( array $fields, array $trip ): array {
