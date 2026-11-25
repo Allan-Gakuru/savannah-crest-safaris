@@ -1,7 +1,7 @@
 /*
 Theme Name: Savannah Crest
 Description: WordPress block theme for Savannah Crest Safaris.
-Version: 0.3.8
+Version: 0.3.9
 Requires at least: 6.4
 Requires PHP: 7.4
 Text Domain: savannah-crest
@@ -401,12 +401,13 @@ a { text-underline-offset: .22em; overflow-wrap: anywhere; }
 #enquiry-details .forminator-ui.forminator-custom-form .forminator-button-submit:hover { background: #422b20; color: var(--scs-paper); }
 
 [data-scs-planner] .forminator-label .scs-question-optional { color: var(--scs-muted); font-size: .7em; font-weight: 400; white-space: nowrap; }
-[data-scs-planner] .forminator-ui label:is(.forminator-radio, .forminator-checkbox) {
+[data-scs-planner] .forminator-ui.forminator-custom-form label:is(.forminator-radio, .forminator-checkbox) {
 	display: flex;
 	align-items: center;
 	width: 100%;
 	box-sizing: border-box;
 	min-height: 44px;
+	pointer-events: auto;
 	cursor: pointer;
 }
 [data-scs-planner] .forminator-ui label:is(.forminator-radio, .forminator-checkbox):is(:hover, :focus-within, :has(input:checked)) {
